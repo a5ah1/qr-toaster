@@ -1,0 +1,23 @@
+{
+  "name": "qr-toaster",
+  "version": "0.1.0",
+  "description": "A client-side QR code generator for the web",
+  "repository": "https://github.com/a5ah1/qr-toaster.git",
+  "author": "a5ah1",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^3.4.3"
+  },
+  "scripts": {
+    "start": "yarn build:css && eleventy --serve",
+    "build": "yarn build:css && eleventy",
+    "build:css": "postcss src/styles/main.css -o dist/styles/main.css"
+  },
+  "dependencies": {
+    "qrcode-svg": "^1.1.0"
+  }
+}
