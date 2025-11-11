@@ -1,0 +1,162 @@
+---
+layout: base.html
+title: QR Toaster - Privacy-First QR Code Generator
+permalink: /
+---
+
+<form id="text-form" class="space-y-4">
+    <!-- Input Mode Toggle -->
+    <div class="flex items-center space-x-4 mb-4">
+        <label class="flex items-center">
+            <input type="radio" name="input-mode" value="single" checked class="mr-2">
+            <span class="text-sm font-medium text-gray-300">Single Line</span>
+        </label>
+        <label class="flex items-center">
+            <input type="radio" name="input-mode" value="multi" class="mr-2">
+            <span class="text-sm font-medium text-gray-300">Multi Line</span>
+        </label>
+    </div>
+    
+    <!-- Single Line Input -->
+    <div id="single-line-input">
+        <label for="text-input" class="block text-sm font-medium text-gray-300 mb-2">
+            Enter text or URL
+        </label>
+        <input 
+            type="text" 
+            id="text-input" 
+            class="w-full rounded-md"
+            placeholder="https://example.com or any text"
+            autocomplete="off"
+        >
+    </div>
+    
+    <!-- Multi Line Input -->
+    <div id="multi-line-input" class="hidden">
+        <label for="text-area" class="block text-sm font-medium text-gray-300 mb-2">
+            Enter text
+        </label>
+        <textarea 
+            id="text-area" 
+            rows="6" 
+            class="w-full rounded-md"
+            placeholder="Enter your text here..."
+        ></textarea>
+    </div>
+    
+    <!-- Character count -->
+    <div class="text-sm text-gray-500">
+        <span id="char-count">0</span> characters
+    </div>
+</form>
+
+<script>
+// Page-specific functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const singleInput = document.getElementById('text-input');
+    const multiInput = document.getElementById('text-area');
+    const singleContainer = document.getElementById('single-line-input');
+    const multiContainer = document.getElementById('multi-line-input');
+    const charCount = document.getElementById('char-count');
+    const modeRadios = document.querySelectorAll('input[name="input-mode"]');
+
+    // Create debounced save function
+    const debouncedSave = window.QRToaster?.storage.createDebouncedSave('text');
+
+    // Load saved data
+    function loadSavedData() {
+        const saved = window.QRToaster?.storage.load('text');
+        if (saved) {
+            // Restore mode
+            if (saved.mode === 'multi') {
+                document.querySelector('input[name="input-mode"][value="multi"]').checked = true;
+                singleContainer.classList.add('hidden');
+                multiContainer.classList.remove('hidden');
+            }
+
+            // Restore values
+            if (saved.singleValue) singleInput.value = saved.singleValue;
+            if (saved.multiValue) multiInput.value = saved.multiValue;
+
+            // Update content without triggering save
+            updateContent(false);
+        }
+    }
+
+    // Save current data
+    function saveData() {
+        if (debouncedSave) {
+            const mode = document.querySelector('input[name="input-mode"]:checked').value;
+            debouncedSave({
+                mode: mode,
+                singleValue: singleInput.value,
+                multiValue: multiInput.value
+            });
+        }
+    }
+
+    // Handle mode toggle
+    modeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'single') {
+                singleContainer.classList.remove('hidden');
+                multiContainer.classList.add('hidden');
+                // Transfer content if any
+                if (multiInput.value && !singleInput.value) {
+                    singleInput.value = multiInput.value.replace(/\n/g, ' ');
+                }
+                singleInput.focus();
+            } else {
+                singleContainer.classList.add('hidden');
+                multiContainer.classList.remove('hidden');
+                // Transfer content if any
+                if (singleInput.value && !multiInput.value) {
+                    multiInput.value = singleInput.value;
+                }
+                multiInput.focus();
+            }
+            updateContent();
+        });
+    });
+
+    // Handle input changes
+    singleInput.addEventListener('input', () => {
+        updateContent();
+        saveData();
+    });
+    multiInput.addEventListener('input', () => {
+        updateContent();
+        saveData();
+    });
+
+    // Update content and regenerate QR
+    function updateContent(shouldSave = true) {
+        const mode = document.querySelector('input[name="input-mode"]:checked').value;
+        const content = mode === 'single' ? singleInput.value : multiInput.value;
+
+        // Update character count
+        charCount.textContent = content.length;
+
+        // Update QR code
+        if (window.QRToaster) {
+            window.QRToaster.setContent(content);
+        }
+
+        // Save data if requested
+        if (shouldSave) {
+            saveData();
+        }
+    }
+
+    // Load saved data first
+    loadSavedData();
+
+    // Initial focus
+    const mode = document.querySelector('input[name="input-mode"]:checked').value;
+    if (mode === 'single') {
+        singleInput.focus();
+    } else {
+        multiInput.focus();
+    }
+});
+</script>

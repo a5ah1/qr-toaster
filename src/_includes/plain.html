@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy-focused QR code generator - create QR codes entirely in your browser">
+    <title>{{ title | default: "QR Toaster - Privacy-First QR Code Generator" }}</title>
+    <link rel="stylesheet" href="/css/output.css">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/js/main.js" type="module" defer></script>
+</head>
+<body class="min-h-screen bg-gray-900 text-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 shadow-sm border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/" class="text-xl font-bold text-gray-100 hover:text-blue-300">QR Toaster</a>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Text/URL
+                        </a>
+                        <a href="/wifi" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Wi-Fi
+                        </a>
+                        <a href="/contact" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Contact
+                        </a>
+                        <a href="/event" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Event
+                        </a>
+                        <a href="/otp" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            OTP/2FA
+                        </a>
+                        <a href="/about" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            About
+                        </a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="sm:hidden flex items-center">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-label="Open menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden" aria-hidden="true"></div>
+
+    <!-- Mobile slide-in menu -->
+    <div id="mobile-menu" class="fixed inset-y-0 right-0 max-w-xs w-full bg-gray-800 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden" aria-hidden="true">
+        <div class="h-full flex flex-col">
+            <!-- Menu header with close button -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-100">Menu</h2>
+                <button id="mobile-menu-close" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-label="Close menu">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Menu links -->
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Text/URL</a>
+                <a href="/wifi" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Wi-Fi</a>
+                <a href="/contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Contact</a>
+                <a href="/event" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Event</a>
+                <a href="/otp" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">OTP/2FA</a>
+                <a href="/about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">About</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="flex-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="prose prose-lg prose-invert max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-p:mb-4 prose-ul:my-6">
+                {{ content }}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

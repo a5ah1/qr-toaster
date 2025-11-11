@@ -1,0 +1,48 @@
+{
+  "name": "qr-toaster",
+  "version": "0.1.0",
+  "description": "Privacy-focused static website for generating QR codes entirely client-side. No server-side processing, no tracking, no analytics.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "postcss src/css/styles.css -o src/css/output.css --minify",
+    "watch:css": "postcss src/css/styles.css -o src/css/output.css --watch",
+    "start": "npm run watch:css & npx @11ty/eleventy --serve",
+    "build": "npm run build:css && npx @11ty/eleventy",
+    "serve-static": "npm run build && npx http-server _site -p 8080 -a 0.0.0.0"
+  },
+  "keywords": [
+    "qr-code",
+    "qr-generator",
+    "privacy",
+    "client-side",
+    "static-site",
+    "eleventy",
+    "pwa",
+    "wifi-qr",
+    "vcard",
+    "totp",
+    "otp"
+  ],
+  "author": "QR Toaster Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a5ah1/qr-toaster.git"
+  },
+  "homepage": "https://github.com/a5ah1/qr-toaster#readme",
+  "bugs": {
+    "url": "https://github.com/a5ah1/qr-toaster/issues"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.0-alpha.3",
+    "qr-code-styling": "^1.9.2",
+    "qrcode-svg": "^1.1.0"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "@tailwindcss/postcss": "^4.1.14",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.11"
+  }
+}

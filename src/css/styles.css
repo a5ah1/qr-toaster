@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* QR Preview styles - responsive design */
+#qr-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qr-preview svg {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+}
+
+/* Enhanced form styling for dark theme */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="tel"],
+input[type="password"],
+input[type="datetime-local"],
+input[type="date"],
+textarea {
+    @apply bg-gray-700 border-gray-500 text-gray-100 shadow-sm;
+    @apply focus:border-blue-400 focus:ring-blue-400 focus:ring-2;
+    @apply placeholder:text-gray-400;
+    @apply px-4 py-3;
+    border-width: 1px !important;
+}
+
+input[type="color"] {
+    @apply bg-gray-700 border-gray-500;
+    @apply focus:border-blue-400 focus:ring-blue-400 focus:ring-2;
+    border-width: 1px !important;
+}
+
+/* Select/dropdown styling */
+select {
+    @apply bg-gray-700 border-gray-500 text-gray-100 shadow-sm;
+    @apply focus:border-blue-400 focus:ring-blue-400 focus:ring-2;
+    @apply px-4 py-3;
+    border-width: 1px !important;
+    color-scheme: dark;
+}
+
+select option {
+    @apply bg-gray-700 text-gray-100;
+}
+
+/* Checkbox and radio styling */
+input[type="checkbox"],
+input[type="radio"] {
+    @apply text-blue-600 bg-gray-700 border-gray-500;
+    @apply focus:ring-blue-500 focus:ring-2;
+    border-width: 1px !important;
+}
+
+/* Label styling for checkboxes and radios */
+label:has(input[type="checkbox"]),
+label:has(input[type="radio"]) {
+    user-select: none;
+    cursor: pointer;
+}
+
+/* Non-selectable text in checkbox/radio labels */
+label:has(input[type="checkbox"]) span,
+label:has(input[type="radio"]) span {
+    user-select: none;
+}
