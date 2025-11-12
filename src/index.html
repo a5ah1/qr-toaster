@@ -1,8 +1,43 @@
 ---
 layout: base.html
 title: QR Toaster - Privacy-First QR Code Generator
+description: Generate QR codes entirely in your browser with no tracking or analytics. Create QR codes for text, URLs, Wi-Fi, contacts, events, and 2FA - completely client-side.
 permalink: /
 ---
+
+<!-- Page header content -->
+<template id="header-content">
+    <h1 class="text-3xl font-bold text-gray-100 mb-3">Text & URL QR Code Generator</h1>
+    <p class="text-gray-300 text-lg">Encode simple text or web URLs into scannable QR codes. Perfect for sharing links, messages, and contact information.</p>
+</template>
+
+<!-- Page documentation content -->
+<template id="documentation-content">
+    <h2>How It Works</h2>
+    <p>When someone scans your QR code, their device will automatically detect the content type. URLs starting with <code>http://</code> or <code>https://</code> will become clickable links that open in a browser, while plain text will be displayed for reading or copying.</p>
+
+    <h2>Format Overview</h2>
+    <p>Text and URL QR codes use the simplest format—the content is encoded exactly as you type it, with no special formatting or wrapping. This makes them universally compatible with all QR code readers.</p>
+
+    <h3>Examples</h3>
+    <pre><code>https://example.com/page</code></pre>
+    <p class="not-prose text-sm text-gray-400 -mt-4 mb-4">↑ This will open as a clickable link</p>
+
+    <pre><code>Hello! Thanks for scanning my QR code.
+Visit my website at example.com</code></pre>
+    <p class="not-prose text-sm text-gray-400 -mt-4 mb-4">↑ This will display as plain text</p>
+
+    <h2>Compatibility</h2>
+    <p>Text and URL QR codes work with all QR code readers on any device—smartphones, tablets, and dedicated scanners. They're the most universally supported QR code type.</p>
+
+    <h2>Tips for Best Results</h2>
+    <ul>
+        <li><strong>Keep URLs short:</strong> Long URLs create more complex QR codes that are harder to scan. Consider using a URL shortener for lengthy links.</li>
+        <li><strong>Test your QR code:</strong> Always scan your generated code to ensure it works as expected.</li>
+        <li><strong>Higher error correction:</strong> If you plan to print small QR codes or use them in low-quality environments, increase the error correction level in Advanced Options.</li>
+        <li><strong>Character limits:</strong> While QR codes can technically store thousands of characters, practical scanning limits are around 300-500 characters depending on error correction level.</li>
+    </ul>
+</template>
 
 <form id="text-form" class="space-y-4">
     <!-- Input Mode Toggle -->
@@ -53,6 +88,20 @@ permalink: /
 <script>
 // Page-specific functionality
 document.addEventListener('DOMContentLoaded', () => {
+    // Inject header and documentation content
+    const headerTemplate = document.getElementById('header-content');
+    const docTemplate = document.getElementById('documentation-content');
+    const headerContainer = document.getElementById('page-header');
+    const docContainer = document.getElementById('page-documentation');
+
+    if (headerTemplate && headerContainer) {
+        headerContainer.appendChild(headerTemplate.content.cloneNode(true));
+    }
+    if (docTemplate && docContainer) {
+        docContainer.appendChild(docTemplate.content.cloneNode(true));
+    }
+
+    // Rest of page functionality
     const singleInput = document.getElementById('text-input');
     const multiInput = document.getElementById('text-area');
     const singleContainer = document.getElementById('single-line-input');

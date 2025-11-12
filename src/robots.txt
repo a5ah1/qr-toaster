@@ -1,0 +1,8 @@
+# QR Toaster - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://a5ah1.github.io/qr-toaster/sitemap.xml

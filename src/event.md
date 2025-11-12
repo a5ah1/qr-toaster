@@ -1,8 +1,78 @@
 ---
 layout: base.html
 title: Event QR - QR Toaster
+description: Create iCalendar QR codes for events. Share event details including title, date, time, location, and description with a scannable QR code.
 permalink: /event/
 ---
+
+<!-- Page header content -->
+<template id="header-content">
+    <h1 class="text-3xl font-bold text-gray-100 mb-3">Calendar Event QR Code Generator</h1>
+    <p class="text-gray-300 text-lg">Create calendar event QR codes that let people add your event to their calendar with a single scan—no manual entry required.</p>
+</template>
+
+<!-- Page documentation content -->
+<template id="documentation-content">
+    <h2>How It Works</h2>
+    <p>When someone scans your event QR code, their device recognizes it as a calendar event and offers to add it to their calendar app. This works seamlessly with Google Calendar, Apple Calendar, Outlook, and most other calendar applications.</p>
+
+    <h2>Format Overview</h2>
+    <p>Event QR codes use the iCalendar format (RFC 5545), a widely-adopted standard for exchanging calendar and scheduling information. The structure looks like this:</p>
+
+    <pre><code>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//QR Toaster//Event QR//EN
+BEGIN:VEVENT
+SUMMARY:Team Meeting
+DTSTART:20250311T140000Z
+DTEND:20250311T150000Z
+LOCATION:Conference Room A
+DESCRIPTION:Monthly team sync meeting
+END:VEVENT
+END:VCALENDAR</code></pre>
+
+    <p>Key components:</p>
+    <ul>
+        <li><strong>SUMMARY:</strong> Event title/name</li>
+        <li><strong>DTSTART:</strong> Start date and time in ISO 8601 format (UTC timezone)</li>
+        <li><strong>DTEND:</strong> End date and time (optional but recommended)</li>
+        <li><strong>LOCATION:</strong> Where the event takes place</li>
+        <li><strong>DESCRIPTION:</strong> Additional details about the event</li>
+    </ul>
+
+    <h3>Date and Time Format</h3>
+    <p>Times are stored in UTC timezone using the format <code>YYYYMMDDTHHMMSSZ</code>. For all-day events, the format changes to <code>YYYYMMDD</code> with the <code>VALUE=DATE</code> parameter. The generator handles these conversions automatically based on your local timezone.</p>
+
+    <h2>Compatibility</h2>
+    <ul>
+        <li><strong>iOS:</strong> Works with native Calendar app via QR scanner</li>
+        <li><strong>Android:</strong> Compatible with Google Calendar and most calendar apps</li>
+        <li><strong>Desktop:</strong> Can be imported into Outlook, Apple Calendar, Google Calendar, and other desktop calendar software</li>
+        <li><strong>Cross-platform:</strong> iCalendar is an open standard supported by virtually all modern calendar applications</li>
+    </ul>
+
+    <h2>Tips for Best Results</h2>
+    <ul>
+        <li><strong>Include end time:</strong> While optional, specifying an end time helps attendees block the correct amount of time</li>
+        <li><strong>Be specific with location:</strong> Include full addresses for physical events, or meeting links for virtual events</li>
+        <li><strong>Keep descriptions concise:</strong> Long descriptions create larger, more complex QR codes. Include only essential information</li>
+        <li><strong>Test timezone handling:</strong> Verify that the event appears at the correct time when scanned in different timezones</li>
+        <li><strong>All-day events:</strong> Use the all-day checkbox for events that don't have specific times (conferences, holidays, etc.)</li>
+    </ul>
+
+    <h2>Use Cases</h2>
+    <ul>
+        <li>Conference and workshop schedules</li>
+        <li>Meetup and networking event invitations</li>
+        <li>Webinar registration confirmations</li>
+        <li>Party and social gathering invites</li>
+        <li>Appointment reminders</li>
+        <li>Public event flyers and posters</li>
+    </ul>
+
+    <h2>Size Considerations</h2>
+    <p>Be mindful that longer descriptions and detailed location information increase the complexity of your QR code. If you have extensive event details, consider keeping the QR code simple and providing a URL in the description that links to a full event page.</p>
+</template>
 
 <form id="event-form" class="space-y-4">
     <h3 class="text-lg font-semibold text-gray-100 mb-4">Event Details</h3>
@@ -27,23 +97,20 @@ permalink: /event/
             <label for="event-start" class="block text-sm font-medium text-gray-300 mb-2">
                 Start Date & Time *
             </label>
-            <input 
-                type="datetime-local" 
-                id="event-start" 
+            <input
+                type="datetime-local"
+                id="event-start"
                 class="w-full rounded-md"
-                required
-            >
+                required>
         </div>
-        
         <div>
             <label for="event-end" class="block text-sm font-medium text-gray-300 mb-2">
                 End Date & Time
             </label>
-            <input 
-                type="datetime-local" 
-                id="event-end" 
-                class="w-full rounded-md"
-            >
+            <input
+                type="datetime-local"
+                id="event-end"
+                class="w-full rounded-md">
         </div>
     </div>
     
@@ -89,6 +156,20 @@ permalink: /event/
 <script>
 // Page-specific functionality
 document.addEventListener('DOMContentLoaded', () => {
+    // Inject header and documentation content
+    const headerTemplate = document.getElementById('header-content');
+    const docTemplate = document.getElementById('documentation-content');
+    const headerContainer = document.getElementById('page-header');
+    const docContainer = document.getElementById('page-documentation');
+
+    if (headerTemplate && headerContainer) {
+        headerContainer.appendChild(headerTemplate.content.cloneNode(true));
+    }
+    if (docTemplate && docContainer) {
+        docContainer.appendChild(docTemplate.content.cloneNode(true));
+    }
+
+    // Rest of page functionality
     const form = document.getElementById('event-form');
     const inputs = form.querySelectorAll('input, textarea');
     const titleInput = document.getElementById('event-title');

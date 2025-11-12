@@ -1,13 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Privacy-focused QR code generator - create QR codes entirely in your browser">
-    <title>{{ title | default: "QR Toaster - Privacy-First QR Code Generator" }}</title>
-    <link rel="stylesheet" href="/css/output.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/main.js" type="module" defer></script>
+    <meta name="description" content="{{ description | default: site.description }}">
+    <title>{{ title | default: site.fullName }}</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="{{ '/favicon-96x96.png' | url }}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{{ '/favicon.svg' | url }}">
+    <link rel="shortcut icon" href="{{ '/favicon.ico' | url }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ '/apple-touch-icon.png' | url }}">
+    <meta name="apple-mobile-web-app-title" content="QR Toaster">
+
+    <!-- SEO Meta Tags -->
+    <meta name="application-name" content="{{ site.name }}">
+    <meta name="robots" content="index,follow">
+    <meta name="theme-color" content="{{ site.themeColor }}">
+    <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:title" content="{{ title | default: site.fullName }}">
+    <meta property="og:description" content="{{ description | default: site.description }}">
+    <meta property="og:site_name" content="{{ site.name }}">
+    <meta property="og:image" content="{{ site.ogImage }}">
+    <meta property="og:image:width" content="{{ site.ogImageWidth }}">
+    <meta property="og:image:height" content="{{ site.ogImageHeight }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ site.url }}{{ page.url }}">
+    <meta name="twitter:title" content="{{ title | default: site.fullName }}">
+    <meta name="twitter:description" content="{{ description | default: site.description }}">
+    <meta name="twitter:image" content="{{ site.ogImage }}">
+
+    <!-- Stylesheets and Assets -->
+    <link rel="stylesheet" href="{{ '/css/output.css' | url }}">
+    <link rel="manifest" href="{{ '/manifest.json' | url }}">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "{{ site.name }}",
+      "description": "{{ site.description }}",
+      "url": "{{ site.url }}",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
+    <!-- Scripts -->
+    <script src="{{ '/js/main.js' | url }}" type="module" defer></script>
 </head>
 <body class="min-h-screen bg-gray-900 text-gray-100">
     <!-- Navigation -->
@@ -16,25 +70,25 @@
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="/" class="text-xl font-bold text-gray-100 hover:text-blue-300">QR Toaster</a>
+                        <a href="{{ '/' | url }}" class="text-xl font-bold text-gray-100 hover:text-blue-300">QR Toaster</a>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="/" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Text/URL
                         </a>
-                        <a href="/wifi" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/wifi' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Wi-Fi
                         </a>
-                        <a href="/contact" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/contact' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Contact
                         </a>
-                        <a href="/event" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/event' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Event
                         </a>
-                        <a href="/otp" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/otp' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             OTP/2FA
                         </a>
-                        <a href="/about" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ '/about' | url }}" class="border-transparent text-gray-300 hover:border-blue-400 hover:text-blue-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             About
                         </a>
                     </div>
@@ -68,12 +122,12 @@
             </div>
             <!-- Menu links -->
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Text/URL</a>
-                <a href="/wifi" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Wi-Fi</a>
-                <a href="/contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Contact</a>
-                <a href="/event" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Event</a>
-                <a href="/otp" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">OTP/2FA</a>
-                <a href="/about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">About</a>
+                <a href="{{ '/' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Text/URL</a>
+                <a href="{{ '/wifi' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Wi-Fi</a>
+                <a href="{{ '/contact' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Contact</a>
+                <a href="{{ '/event' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Event</a>
+                <a href="{{ '/otp' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">OTP/2FA</a>
+                <a href="{{ '/about' | url }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">About</a>
             </nav>
         </div>
     </div>
@@ -86,5 +140,56 @@
             </div>
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Footer Links Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- About Section -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-3">QR Toaster</h3>
+                    <p class="text-sm text-gray-400 mb-3">
+                        Privacy-focused QR code generator. All processing happens locally in your browser. No tracking, no analytics, no servers.
+                    </p>
+                </div>
+
+                <!-- QR Generators -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-3">Generators</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ '/' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">Text / URL</a></li>
+                        <li><a href="{{ '/wifi' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">Wi-Fi</a></li>
+                        <li><a href="{{ '/contact' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">Contact (vCard)</a></li>
+                        <li><a href="{{ '/event' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">Event (iCalendar)</a></li>
+                        <li><a href="{{ '/otp' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">OTP / 2FA</a></li>
+                    </ul>
+                </div>
+
+                <!-- Information -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-3">Information</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ '/about' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">About</a></li>
+                        <li><a href="{{ '/privacy' | url }}" class="text-gray-400 hover:text-blue-400 transition-colors">Privacy</a></li>
+                        <li><a href="https://github.com/a5ah1/qr-toaster" target="_blank" rel="noopener" class="text-gray-400 hover:text-blue-400 transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-700 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+                    <div>
+                        Open source under <a href="https://github.com/a5ah1/qr-toaster/blob/main/LICENSE" target="_blank" rel="noopener" class="hover:text-blue-400">MIT License</a>
+                    </div>
+                    <div class="font-mono">
+                        Build: <a href="https://github.com/a5ah1/qr-toaster/commit/{{ build.hash }}" target="_blank" rel="noopener" class="hover:text-blue-400">{{ build.hash }}</a>
+                        {% if build.hash != 'dev' %}| {{ build.commitDate | date: "%Y-%m-%d" }}{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

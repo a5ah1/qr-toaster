@@ -1,6 +1,7 @@
 ---
 layout: plain.html
 title: About - QR Toaster
+description: Learn about QR Toaster, a privacy-focused QR code generator that works entirely in your browser with no tracking or server-side processing.
 permalink: /about/
 ---
 

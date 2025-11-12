@@ -1,8 +1,61 @@
 ---
 layout: base.html
 title: Wi-Fi QR - QR Toaster
+description: Create Wi-Fi QR codes for easy network sharing. Generate codes with SSID, password, and security type for quick network access.
 permalink: /wifi/
 ---
+
+<!-- Page header content -->
+<template id="header-content">
+    <h1 class="text-3xl font-bold text-gray-100 mb-3">Wi-Fi QR Code Generator</h1>
+    <p class="text-gray-300 text-lg">Share your Wi-Fi network credentials instantly—no typing required. Guests can scan and connect in seconds.</p>
+</template>
+
+<!-- Page documentation content -->
+<template id="documentation-content">
+    <h2>How It Works</h2>
+    <p>When someone scans your Wi-Fi QR code, their device will automatically prompt them to join the network. On most modern smartphones (Android 10+, iOS 11+), the connection process is seamless—just scan and tap "Join" or "Connect".</p>
+
+    <h2>Format Overview</h2>
+    <p>Wi-Fi QR codes use the standardized <code>WIFI:</code> format, which encodes your network name (SSID), security type, password, and additional settings. The format follows this structure:</p>
+
+    <pre><code>WIFI:S:"NetworkName";T:WPA;P:"password";H:false;;</code></pre>
+
+    <p>The components are:</p>
+    <ul>
+        <li><strong>S:</strong> Network name (SSID) enclosed in quotes</li>
+        <li><strong>T:</strong> Security type (WPA, WEP, or nopass for open networks)</li>
+        <li><strong>P:</strong> Password enclosed in quotes (omitted for open networks)</li>
+        <li><strong>H:</strong> Whether the network is hidden (true/false)</li>
+        <li><strong>R:</strong> Optional parameter for WPA3-only networks (R:1 disables WPA2 fallback)</li>
+    </ul>
+
+    <h3>Special Character Escaping</h3>
+    <p>If your network name or password contains special characters like backslash (\), semicolon (;), comma (,), quote ("), or colon (:), they must be escaped with a backslash. Our generator handles this automatically.</p>
+
+    <h2>Compatibility</h2>
+    <ul>
+        <li><strong>Android:</strong> Native support since Android 10 (via camera app or Quick Settings QR scanner)</li>
+        <li><strong>iOS:</strong> Native support since iOS 11 (via Camera app)</li>
+        <li><strong>Older devices:</strong> May require third-party QR scanner apps with Wi-Fi support</li>
+    </ul>
+
+    <h2>Security Notes</h2>
+    <ul>
+        <li><strong>WPA/WPA2/WPA3:</strong> Modern, secure encryption. WPA3 offers the strongest protection but requires compatible devices.</li>
+        <li><strong>WEP:</strong> Legacy encryption, considered insecure. Only use if you have older devices that don't support WPA.</li>
+        <li><strong>Open networks:</strong> No password required, but anyone can connect. Not recommended except for public/guest networks.</li>
+        <li><strong>Hidden networks:</strong> Provide minimal security benefit and can cause connection issues on some devices.</li>
+    </ul>
+
+    <h2>Tips</h2>
+    <ul>
+        <li>Print your Wi-Fi QR code and place it where guests can easily scan it (near the entrance, in guest rooms, etc.)</li>
+        <li>Consider creating separate QR codes for your main network and a guest network</li>
+        <li>If you change your Wi-Fi password, remember to generate a new QR code</li>
+        <li>Test the QR code with different devices to ensure compatibility</li>
+    </ul>
+</template>
 
 <form id="wifi-form" class="space-y-4">
     <h3 class="text-lg font-semibold text-gray-100 mb-4">Wi-Fi Network Details</h3>
@@ -100,6 +153,20 @@ permalink: /wifi/
 <script>
 // Page-specific functionality
 document.addEventListener('DOMContentLoaded', () => {
+    // Inject header and documentation content
+    const headerTemplate = document.getElementById('header-content');
+    const docTemplate = document.getElementById('documentation-content');
+    const headerContainer = document.getElementById('page-header');
+    const docContainer = document.getElementById('page-documentation');
+
+    if (headerTemplate && headerContainer) {
+        headerContainer.appendChild(headerTemplate.content.cloneNode(true));
+    }
+    if (docTemplate && docContainer) {
+        docContainer.appendChild(docTemplate.content.cloneNode(true));
+    }
+
+    // Rest of page functionality
     const form = document.getElementById('wifi-form');
     const ssidInput = document.getElementById('wifi-ssid');
     const securitySelect = document.getElementById('wifi-security');
