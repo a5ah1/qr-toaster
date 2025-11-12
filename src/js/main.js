@@ -199,7 +199,8 @@ async function handleStylingToggle() {
 async function loadQRCodeStylingLibrary() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = '/js/qr-code-styling.js';
+        // Use import.meta.url to get path relative to this module
+        script.src = new URL('qr-code-styling.js', import.meta.url).href;
         script.onload = () => {
             resolve();
         };
@@ -323,7 +324,8 @@ async function generateBasicQR() {
 async function loadQRCodeLibrary() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = '/js/qrcode.js';
+        // Use import.meta.url to get path relative to this module
+        script.src = new URL('qrcode.js', import.meta.url).href;
         script.onload = () => {
             resolve();
         };

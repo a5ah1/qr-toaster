@@ -59,6 +59,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated pathPrefix in eleventy.config.js to '/qr-toaster/'
   - Converted all hardcoded paths to use Eleventy's url filter
   - Site now works correctly at https://a5ah1.github.io/qr-toaster/
+- JavaScript library loading paths now use import.meta.url for proper subpath resolution
+  - Fixed qrcode.js and qr-code-styling.js loading to work with GitHub Pages deployment
+  - Resolved 404 errors when dynamically loading QR code libraries
 - Typography plugin no longer affects generator page font sizes
 - Empty paragraph elements no longer render in Event page date/time fields
 - Template content injection timing issue resolved (now waits for DOMContentLoaded)
