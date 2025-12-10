@@ -17,7 +17,7 @@ This project uses date-based versioning since it's a continuously-deployed websi
   - Full address fields (street, city, state, postal code, country)
   - Birthday field with date picker
 - Added special character escaping for vCard fields (semicolons, commas, backslashes)
-- Improved cache-busting warnings when git is unavailable during build
+- Improved cache-busting warning when git is unavailable during build
 
 ### Fixed
 - Contact QR codes now display person's name instead of company name on phones
