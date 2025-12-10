@@ -14,7 +14,8 @@ module.exports = function() {
   } catch (error) {
     // Not in a git repository or git not available
     // Use 'dev' and current timestamp for local development
-    console.log('Git info not available, using development build info');
+    console.warn('\n⚠️  WARNING: Git not available - cache-busting will use "dev" instead of commit hash');
+    console.warn('   Assets may be cached incorrectly in production. Ensure git is installed and this is a git repository.\n');
   }
 
   return {
