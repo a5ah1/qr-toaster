@@ -17,24 +17,34 @@ permalink: /contact/
     <p>When someone scans your contact QR code, their device will recognize it as a vCard (virtual contact card) and prompt them to save the information to their contacts app. All major smartphones support this format natively—no additional apps required.</p>
 
     <h2>Format Overview</h2>
-    <p>Contact QR codes use the vCard 3.0 format, an internationally recognized standard for electronic business cards. The format structures your contact information like this:</p>
+    <p>Contact QR codes use the vCard 3.0 format, an internationally recognized standard for electronic business cards. We use an enhanced format optimized for maximum compatibility with iOS and Android devices:</p>
 
     <pre><code>BEGIN:VCARD
 VERSION:3.0
+N:Doe;John;;;
 FN:John Doe
-TEL:+1-555-123-4567
-EMAIL:john.doe@example.com
+NICKNAME:John Doe
 ORG:Acme Corporation
+TITLE:Software Engineer
+TEL;TYPE=CELL:+1-555-123-4567
+EMAIL;TYPE=WORK:john.doe@example.com
 URL:https://example.com
+ADR;TYPE=WORK:;;123 Main St;New York;NY;10001;USA
+BDAY:1990-01-15
 END:VCARD</code></pre>
 
     <p>The components are:</p>
     <ul>
-        <li><strong>FN:</strong> Full name (required)</li>
-        <li><strong>TEL:</strong> Phone number</li>
-        <li><strong>EMAIL:</strong> Email address</li>
+        <li><strong>N:</strong> Structured name (LastName;FirstName) - ensures phones display the correct name</li>
+        <li><strong>FN:</strong> Full formatted name</li>
+        <li><strong>NICKNAME:</strong> Display name fallback for some devices</li>
         <li><strong>ORG:</strong> Organization or company name</li>
+        <li><strong>TITLE:</strong> Job title or position</li>
+        <li><strong>TEL;TYPE=CELL:</strong> Mobile phone number</li>
+        <li><strong>EMAIL;TYPE=WORK:</strong> Work email address</li>
         <li><strong>URL:</strong> Website URL</li>
+        <li><strong>ADR;TYPE=WORK:</strong> Physical address (street, city, state, postal code, country)</li>
+        <li><strong>BDAY:</strong> Birthday in YYYY-MM-DD format</li>
     </ul>
 
     <h2>Compatibility</h2>
@@ -71,16 +81,29 @@ END:VCARD</code></pre>
     <h3 class="text-lg font-semibold text-gray-100 mb-4">Contact Information</h3>
     
     <!-- Name -->
-    <div>
-        <label for="contact-name" class="block text-sm font-medium text-gray-300 mb-2">
-            Full Name
-        </label>
-        <input 
-            type="text" 
-            id="contact-name" 
-            class="w-full rounded-md"
-            placeholder="John Doe"
-        >
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label for="contact-firstname" class="block text-sm font-medium text-gray-300 mb-2">
+                First Name
+            </label>
+            <input
+                type="text"
+                id="contact-firstname"
+                class="w-full rounded-md"
+                placeholder="John"
+            >
+        </div>
+        <div>
+            <label for="contact-lastname" class="block text-sm font-medium text-gray-300 mb-2">
+                Last Name
+            </label>
+            <input
+                type="text"
+                id="contact-lastname"
+                class="w-full rounded-md"
+                placeholder="Doe"
+            >
+        </div>
     </div>
     
     <!-- Phone -->
@@ -127,13 +150,90 @@ END:VCARD</code></pre>
         <label for="contact-url" class="block text-sm font-medium text-gray-300 mb-2">
             Website
         </label>
-        <input 
-            type="url" 
-            id="contact-url" 
+        <input
+            type="url"
+            id="contact-url"
             class="w-full rounded-md"
             placeholder="https://example.com"
         >
     </div>
+
+    <!-- Additional Details (collapsible) -->
+    <details class="border border-gray-600 rounded-lg">
+        <summary class="px-4 py-3 cursor-pointer text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-lg">
+            Additional Details
+        </summary>
+        <div class="p-4 pt-2 space-y-4 border-t border-gray-600">
+            <!-- Job Title -->
+            <div>
+                <label for="contact-title" class="block text-sm font-medium text-gray-300 mb-2">
+                    Job Title
+                </label>
+                <input
+                    type="text"
+                    id="contact-title"
+                    class="w-full rounded-md"
+                    placeholder="Software Engineer"
+                >
+            </div>
+
+            <!-- Address -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Address
+                </label>
+                <div class="space-y-3">
+                    <input
+                        type="text"
+                        id="contact-street"
+                        class="w-full rounded-md"
+                        placeholder="Street Address"
+                    >
+                    <div class="grid grid-cols-2 gap-3">
+                        <input
+                            type="text"
+                            id="contact-city"
+                            class="w-full rounded-md"
+                            placeholder="City"
+                        >
+                        <input
+                            type="text"
+                            id="contact-state"
+                            class="w-full rounded-md"
+                            placeholder="State/Region"
+                        >
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input
+                            type="text"
+                            id="contact-postal"
+                            class="w-full rounded-md"
+                            placeholder="Postal Code"
+                        >
+                        <input
+                            type="text"
+                            id="contact-country"
+                            class="w-full rounded-md"
+                            placeholder="Country"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Birthday -->
+            <div>
+                <label for="contact-birthday" class="block text-sm font-medium text-gray-300 mb-2">
+                    Birthday
+                </label>
+                <input
+                    type="date"
+                    id="contact-birthday"
+                    class="w-full rounded-md"
+                >
+            </div>
+
+        </div>
+    </details>
 </form>
 
 <script>
@@ -154,12 +254,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Rest of page functionality
     const form = document.getElementById('contact-form');
-    const inputs = form.querySelectorAll('input');
-    const nameInput = document.getElementById('contact-name');
+    const inputs = form.querySelectorAll('input, textarea');
+    const firstNameInput = document.getElementById('contact-firstname');
+    const lastNameInput = document.getElementById('contact-lastname');
     const phoneInput = document.getElementById('contact-phone');
     const emailInput = document.getElementById('contact-email');
     const orgInput = document.getElementById('contact-org');
     const urlInput = document.getElementById('contact-url');
+    // Additional details fields
+    const titleInput = document.getElementById('contact-title');
+    const streetInput = document.getElementById('contact-street');
+    const cityInput = document.getElementById('contact-city');
+    const stateInput = document.getElementById('contact-state');
+    const postalInput = document.getElementById('contact-postal');
+    const countryInput = document.getElementById('contact-country');
+    const birthdayInput = document.getElementById('contact-birthday');
 
     // Create debounced save function
     const debouncedSave = window.QRToaster?.storage.createDebouncedSave('contact');
@@ -168,11 +277,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadSavedData() {
         const saved = window.QRToaster?.storage.load('contact');
         if (saved) {
-            if (saved.name) nameInput.value = saved.name;
+            // Support legacy 'name' field by splitting into first/last
+            if (saved.name && !saved.firstName && !saved.lastName) {
+                const parts = saved.name.trim().split(/\s+/);
+                if (parts.length >= 2) {
+                    firstNameInput.value = parts.slice(0, -1).join(' ');
+                    lastNameInput.value = parts[parts.length - 1];
+                } else {
+                    firstNameInput.value = saved.name;
+                }
+            } else {
+                if (saved.firstName) firstNameInput.value = saved.firstName;
+                if (saved.lastName) lastNameInput.value = saved.lastName;
+            }
             if (saved.phone) phoneInput.value = saved.phone;
             if (saved.email) emailInput.value = saved.email;
             if (saved.org) orgInput.value = saved.org;
             if (saved.url) urlInput.value = saved.url;
+            // Additional details
+            if (saved.title) titleInput.value = saved.title;
+            if (saved.street) streetInput.value = saved.street;
+            if (saved.city) cityInput.value = saved.city;
+            if (saved.state) stateInput.value = saved.state;
+            if (saved.postal) postalInput.value = saved.postal;
+            if (saved.country) countryInput.value = saved.country;
+            if (saved.birthday) birthdayInput.value = saved.birthday;
             updateVCard();
         }
     }
@@ -181,33 +310,96 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveData() {
         if (debouncedSave) {
             debouncedSave({
-                name: nameInput.value,
+                firstName: firstNameInput.value,
+                lastName: lastNameInput.value,
                 phone: phoneInput.value,
                 email: emailInput.value,
                 org: orgInput.value,
-                url: urlInput.value
+                url: urlInput.value,
+                // Additional details
+                title: titleInput.value,
+                street: streetInput.value,
+                city: cityInput.value,
+                state: stateInput.value,
+                postal: postalInput.value,
+                country: countryInput.value,
+                birthday: birthdayInput.value
             });
         }
     }
 
-    function updateVCard() {
-        const name = nameInput.value;
-        const phone = phoneInput.value;
-        const email = emailInput.value;
-        const org = orgInput.value;
-        const url = urlInput.value;
+    // Escape special characters for vCard (commas, semicolons, backslashes, newlines)
+    function escapeVCard(str) {
+        if (!str) return '';
+        return str
+            .replace(/\\/g, '\\\\')
+            .replace(/;/g, '\\;')
+            .replace(/,/g, '\\,')
+            .replace(/\n/g, '\\n');
+    }
 
-        // Build vCard string
+    function updateVCard() {
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+        const org = orgInput.value.trim();
+        const url = urlInput.value.trim();
+        // Additional details
+        const title = titleInput.value.trim();
+        const street = streetInput.value.trim();
+        const city = cityInput.value.trim();
+        const state = stateInput.value.trim();
+        const postal = postalInput.value.trim();
+        const country = countryInput.value.trim();
+        const birthday = birthdayInput.value.trim();
+
+        // Build full name from parts
+        const fullName = [firstName, lastName].filter(Boolean).join(' ');
+
+        // Build vCard string with improved compatibility
+        // N and NICKNAME fields ensure proper display on iOS/Android
         let vcard = 'BEGIN:VCARD\nVERSION:3.0\n';
-        if (name) vcard += `FN:${name}\n`;
-        if (phone) vcard += `TEL:${phone}\n`;
-        if (email) vcard += `EMAIL:${email}\n`;
-        if (org) vcard += `ORG:${org}\n`;
+
+        // N (structured name) - critical for phone compatibility
+        // Format: N:LastName;FirstName;MiddleName;Prefix;Suffix
+        if (firstName || lastName) {
+            vcard += `N:${escapeVCard(lastName)};${escapeVCard(firstName)};;;\n`;
+        }
+
+        // FN (formatted name) - required by vCard spec
+        if (fullName) vcard += `FN:${escapeVCard(fullName)}\n`;
+
+        // NICKNAME - fallback display name for some devices
+        if (fullName) vcard += `NICKNAME:${escapeVCard(fullName)}\n`;
+
+        // Organization
+        if (org) vcard += `ORG:${escapeVCard(org)}\n`;
+
+        // Job title
+        if (title) vcard += `TITLE:${escapeVCard(title)}\n`;
+
+        // Phone with TYPE for better categorization
+        if (phone) vcard += `TEL;TYPE=CELL:${phone}\n`;
+
+        // Email with TYPE for better categorization
+        if (email) vcard += `EMAIL;TYPE=WORK:${email}\n`;
+
+        // Website
         if (url) vcard += `URL:${url}\n`;
+
+        // Address - format: ADR;TYPE=WORK:;;Street;City;State;PostalCode;Country
+        if (street || city || state || postal || country) {
+            vcard += `ADR;TYPE=WORK:;;${escapeVCard(street)};${escapeVCard(city)};${escapeVCard(state)};${escapeVCard(postal)};${escapeVCard(country)}\n`;
+        }
+
+        // Birthday - format: BDAY:YYYY-MM-DD
+        if (birthday) vcard += `BDAY:${birthday}\n`;
+
         vcard += 'END:VCARD';
 
         // Update QR code
-        if (window.QRToaster && (name || phone || email)) {
+        if (window.QRToaster && (firstName || lastName || phone || email)) {
             window.QRToaster.setContent(vcard);
         }
     }
