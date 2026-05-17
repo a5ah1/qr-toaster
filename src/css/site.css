@@ -81,6 +81,23 @@ main { flex: 1; }
 }
 
 /* =======================================================================
+   COMPONENT REFINEMENTS
+   Small extensions to design-system components. Kept here (not in
+   components.css) so the design-system files stay drop-in replaceable.
+   ======================================================================= */
+
+/* Restore semantic [hidden] over component classes that set `display`.
+   Without this, the browser's user-agent `[hidden] { display: none }`
+   loses to author CSS like `.qrt-field { display: flex }`. */
+[hidden] { display: none !important; }
+
+/* .qrt-color disabled state (matches .qrt-input:disabled convention) */
+.qrt-color:has(input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =======================================================================
    FOOTER
    ======================================================================= */
 

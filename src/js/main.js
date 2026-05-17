@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     updateSizeDisplay();
     updateResolutionDisplay();
+    syncColorDisplay(elements.fgColor);
+    syncColorDisplay(elements.bgColor);
 });
 
 // Cache frequently accessed DOM elements
@@ -118,10 +120,21 @@ async function handleMarginChange() {
 }
 
 // Handle color changes
-async function handleColorChange() {
+async function handleColorChange(event) {
     state.options.foreground = elements.fgColor.value;
     state.options.background = elements.bgColor.value;
+    syncColorDisplay(event?.target);
     await regenerateQR();
+}
+
+// Sync .qrt-color swatch + hex value with the native color input
+function syncColorDisplay(input) {
+    if (!input) return;
+    const wrap = input.closest('.qrt-color');
+    if (!wrap) return;
+    wrap.style.setProperty('--swatch', input.value);
+    const valueEl = wrap.querySelector('.qrt-color__value');
+    if (valueEl) valueEl.textContent = input.value.toUpperCase();
 }
 
 // Handle transparent background toggle
