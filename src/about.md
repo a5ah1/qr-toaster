@@ -13,7 +13,7 @@ Create QR codes instantly, privately, and completely offline. All processing hap
 
 <div class="qrt-typegrid">
   <a href="{{ '/' | url }}" class="qrt-typecard">
-    <span class="qrt-typecard__icon" aria-hidden="true">📝</span>
+    <span class="qrt-typecard__icon">{% lucide "link-2" 22 %}</span>
     <div class="qrt-typecard__body">
       <h3>Text/URL</h3>
       <p>Plain text or web URLs.</p>
@@ -21,7 +21,7 @@ Create QR codes instantly, privately, and completely offline. All processing hap
   </a>
 
   <a href="{{ '/wifi/' | url }}" class="qrt-typecard">
-    <span class="qrt-typecard__icon" aria-hidden="true">📶</span>
+    <span class="qrt-typecard__icon">{% lucide "wifi" 22 %}</span>
     <div class="qrt-typecard__body">
       <h3>Wi-Fi</h3>
       <p>Share network credentials securely.</p>
@@ -29,7 +29,7 @@ Create QR codes instantly, privately, and completely offline. All processing hap
   </a>
 
   <a href="{{ '/contact/' | url }}" class="qrt-typecard">
-    <span class="qrt-typecard__icon" aria-hidden="true">👤</span>
+    <span class="qrt-typecard__icon">{% lucide "contact-round" 22 %}</span>
     <div class="qrt-typecard__body">
       <h3>Contact</h3>
       <p>vCard QR codes for easy contact sharing.</p>
@@ -37,7 +37,7 @@ Create QR codes instantly, privately, and completely offline. All processing hap
   </a>
 
   <a href="{{ '/event/' | url }}" class="qrt-typecard">
-    <span class="qrt-typecard__icon" aria-hidden="true">📅</span>
+    <span class="qrt-typecard__icon">{% lucide "calendar" 22 %}</span>
     <div class="qrt-typecard__body">
       <h3>Event</h3>
       <p>Calendar event QR codes.</p>
@@ -45,7 +45,7 @@ Create QR codes instantly, privately, and completely offline. All processing hap
   </a>
 
   <a href="{{ '/otp/' | url }}" class="qrt-typecard">
-    <span class="qrt-typecard__icon" aria-hidden="true">🔐</span>
+    <span class="qrt-typecard__icon">{% lucide "key-round" 22 %}</span>
     <div class="qrt-typecard__body">
       <h3>OTP/2FA</h3>
       <p>Two-factor authentication setup for apps like Google Authenticator.</p>
@@ -56,8 +56,8 @@ Create QR codes instantly, privately, and completely offline. All processing hap
 ## Privacy First
 
 <ul class="qrt-checklist">
-  <li><span class="qrt-checklist__mark" aria-hidden="true">✓</span> All QR code generation happens locally in your browser.</li>
-  <li><span class="qrt-checklist__mark" aria-hidden="true">✓</span> No data is sent to any server.</li>
-  <li><span class="qrt-checklist__mark" aria-hidden="true">✓</span> Works completely offline once loaded.</li>
-  <li><span class="qrt-checklist__mark" aria-hidden="true">✓</span> No tracking, analytics, or cookies.</li>
+  <li><span class="qrt-checklist__mark">{% lucide "check" 14 2.25 %}</span> All QR code generation happens locally in your browser.</li>
+  <li><span class="qrt-checklist__mark">{% lucide "check" 14 2.25 %}</span> No data is sent to any server.</li>
+  <li><span class="qrt-checklist__mark">{% lucide "check" 14 2.25 %}</span> Works completely offline once loaded.</li>
+  <li><span class="qrt-checklist__mark">{% lucide "check" 14 2.25 %}</span> No tracking, analytics, or cookies.</li>
 </ul>

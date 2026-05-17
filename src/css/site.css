@@ -194,10 +194,10 @@ main { flex: 1; }
   flex-shrink: 0;
   border-radius: var(--radius-md);
   background: var(--color-accent-faint);
+  color: var(--color-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
   line-height: 1;
 }
 .qrt-typecard__body h3 {

@@ -70,7 +70,7 @@
     <nav class="qrt-nav" aria-label="Primary">
         <div class="qrt-nav__inner">
             <a href="{{ '/' | url }}" class="qrt-nav__brand">
-                <img src="{{ '/qr-toaster-logo.svg' | url }}" alt="" width="28" height="28">
+                <img src="{{ '/qr-toaster-mark-56.png' | url }}" alt="" width="28" height="28">
                 <span>QR Toaster</span>
             </a>
             <div class="qrt-nav__links">
@@ -82,9 +82,7 @@
                 <a href="{{ '/about/' | url }}" class="qrt-nav__link"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a>
             </div>
             <button id="mobile-menu-button" type="button" class="qrt-nav__burger" aria-label="Open menu" aria-expanded="false">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                    <path d="M4 7h16M4 12h16M4 17h16"/>
-                </svg>
+                {% lucide "menu" 22 %}
             </button>
         </div>
     </nav>
@@ -94,13 +92,11 @@
     <aside id="mobile-menu" class="qrt-drawer" aria-hidden="true" aria-label="Site navigation">
         <header class="qrt-drawer__header">
             <a href="{{ '/' | url }}" class="qrt-nav__brand">
-                <img src="{{ '/qr-toaster-logo.svg' | url }}" alt="" width="24" height="24">
+                <img src="{{ '/qr-toaster-mark-56.png' | url }}" alt="" width="24" height="24">
                 <span>Menu</span>
             </a>
             <button id="mobile-menu-close" type="button" class="qrt-btn qrt-btn--icon qrt-btn--ghost" aria-label="Close menu">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                </svg>
+                {% lucide "x" 20 %}
             </button>
         </header>
         <nav class="qrt-drawer__nav">

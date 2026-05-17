@@ -116,13 +116,8 @@ permalink: /otp/
     <div class="qrt-input-wrap qrt-input-wrap--suffix">
       <input type="password" id="secret" class="qrt-input qrt-mono" placeholder="Base32 encoded secret" required>
       <button type="button" id="toggle-secret" class="qrt-input-wrap__suffix" aria-label="Toggle secret visibility">
-        <svg id="eye-open" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-        <svg id="eye-closed" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" hidden>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-        </svg>
+        <span id="eye-open" style="display:inline-flex;">{% lucide "eye" 20 %}</span>
+        <span id="eye-closed" style="display:inline-flex;" hidden>{% lucide "eye-off" 20 %}</span>
       </button>
     </div>
     <p class="qrt-help">

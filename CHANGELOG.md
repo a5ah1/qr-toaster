@@ -6,6 +6,14 @@ This project uses date-based versioning since it's a continuously-deployed websi
 
 ## 2026-05-17
 
+### Added
+- Lucide icon system via `lucide-static` and a `{% lucide %}` Eleventy shortcode
+  - Inlines SVGs at build time — no runtime JS, no CDN, no network calls
+  - Supports size/stroke/extra-class overrides as positional args
+- About-page cards now use Lucide stroke icons (link-2, wifi, contact-round, calendar, key-round) instead of emoji
+- Privacy checklist marks switched to the Lucide `check` icon
+- Mobile nav burger, drawer close, download button, and OTP show/hide eye toggle all use canonical Lucide icons in place of hand-rolled inline SVGs
+
 ### Changed
 - Replaced Tailwind CSS v4 with a hand-rolled design system
   - New design tokens (warm "toast" amber accent, dark-only palette, system fonts)
