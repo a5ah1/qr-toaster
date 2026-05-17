@@ -7,8 +7,8 @@ permalink: /event/
 
 <!-- Page header content -->
 <template id="header-content">
-    <h1 class="text-3xl font-bold text-gray-100 mb-3">Calendar Event QR Code Generator</h1>
-    <p class="text-gray-300 text-lg">Create calendar event QR codes that let people add your event to their calendar with a single scan—no manual entry required.</p>
+    <h1>Calendar Event QR Code Generator</h1>
+    <p>Create calendar event QR codes that let people add your event to their calendar with a single scan—no manual entry required.</p>
 </template>
 
 <!-- Page documentation content -->
@@ -74,83 +74,43 @@ END:VCALENDAR</code></pre>
     <p>Be mindful that longer descriptions and detailed location information increase the complexity of your QR code. If you have extensive event details, consider keeping the QR code simple and providing a URL in the description that links to a full event page.</p>
 </template>
 
-<form id="event-form" class="space-y-4">
-    <h3 class="text-lg font-semibold text-gray-100 mb-4">Event Details</h3>
-    
-    <!-- Event Title -->
-    <div>
-        <label for="event-title" class="block text-sm font-medium text-gray-300 mb-2">
-            Event Title *
+<form id="event-form" class="qrt-stack">
+    <h2 class="qrt-section-title">Event details</h2>
+
+    <div class="qrt-field">
+        <label for="event-title" class="qrt-label">
+            <span>Event title<span class="qrt-label__required"> *</span></span>
         </label>
-        <input 
-            type="text" 
-            id="event-title" 
-            class="w-full rounded-md"
-            placeholder="Team Meeting"
-            required
-        >
+        <input type="text" id="event-title" class="qrt-input" placeholder="Team Meeting" required>
     </div>
-    
-    <!-- Start Date & Time -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <label for="event-start" class="block text-sm font-medium text-gray-300 mb-2">
-                Start Date & Time *
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+        <div class="qrt-field">
+            <label for="event-start" class="qrt-label">
+                <span>Start date &amp; time<span class="qrt-label__required"> *</span></span>
             </label>
-            <input
-                type="datetime-local"
-                id="event-start"
-                class="w-full rounded-md"
-                required>
+            <input type="datetime-local" id="event-start" class="qrt-input" required>
         </div>
-        <div>
-            <label for="event-end" class="block text-sm font-medium text-gray-300 mb-2">
-                End Date & Time
-            </label>
-            <input
-                type="datetime-local"
-                id="event-end"
-                class="w-full rounded-md">
+        <div class="qrt-field">
+            <label for="event-end" class="qrt-label">End date &amp; time</label>
+            <input type="datetime-local" id="event-end" class="qrt-input">
         </div>
     </div>
-    
-    <!-- Location -->
-    <div>
-        <label for="event-location" class="block text-sm font-medium text-gray-300 mb-2">
-            Location
-        </label>
-        <input 
-            type="text" 
-            id="event-location" 
-            class="w-full rounded-md"
-            placeholder="Conference Room A, 123 Main St"
-        >
+
+    <div class="qrt-field">
+        <label for="event-location" class="qrt-label">Location</label>
+        <input type="text" id="event-location" class="qrt-input" placeholder="Conference Room A, 123 Main St">
     </div>
-    
-    <!-- Description -->
-    <div>
-        <label for="event-description" class="block text-sm font-medium text-gray-300 mb-2">
-            Description
-        </label>
-        <textarea 
-            id="event-description" 
-            rows="3"
-            class="w-full rounded-md"
-            placeholder="Meeting agenda and details..."
-        ></textarea>
+
+    <div class="qrt-field">
+        <label for="event-description" class="qrt-label">Description</label>
+        <textarea id="event-description" class="qrt-textarea" rows="3" placeholder="Meeting agenda and details..."></textarea>
     </div>
-    
-    <!-- All Day Event -->
-    <div class="flex items-center">
-        <input 
-            type="checkbox" 
-            id="event-allday" 
-            class="rounded"
-        >
-        <label for="event-allday" class="ml-2 text-sm text-gray-300">
-            All-day event
-        </label>
-    </div>
+
+    <label class="qrt-check">
+        <input type="checkbox" id="event-allday">
+        <span class="qrt-check__label">All-day event</span>
+    </label>
 </form>
 
 <script>

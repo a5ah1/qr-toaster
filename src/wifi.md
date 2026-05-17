@@ -7,8 +7,8 @@ permalink: /wifi/
 
 <!-- Page header content -->
 <template id="header-content">
-    <h1 class="text-3xl font-bold text-gray-100 mb-3">Wi-Fi QR Code Generator</h1>
-    <p class="text-gray-300 text-lg">Share your Wi-Fi network credentials instantly—no typing required. Guests can scan and connect in seconds.</p>
+    <h1>Wi-Fi QR Code Generator</h1>
+    <p>Share your Wi-Fi network credentials instantly—no typing required. Guests can scan and connect in seconds.</p>
 </template>
 
 <!-- Page documentation content -->
@@ -57,94 +57,50 @@ permalink: /wifi/
     </ul>
 </template>
 
-<form id="wifi-form" class="space-y-4">
-    <h3 class="text-lg font-semibold text-gray-100 mb-4">Wi-Fi Network Details</h3>
-    
-    <!-- Network Name (SSID) -->
-    <div>
-        <label for="wifi-ssid" class="block text-sm font-medium text-gray-300 mb-2">
-            Network Name (SSID) *
+<form id="wifi-form" class="qrt-stack">
+    <h2 class="qrt-section-title">Wi-Fi network details</h2>
+
+    <div class="qrt-field">
+        <label for="wifi-ssid" class="qrt-label">
+            <span>Network Name (SSID)<span class="qrt-label__required"> *</span></span>
         </label>
-        <input 
-            type="text" 
-            id="wifi-ssid" 
-            class="w-full rounded-md"
-            placeholder="My Network"
-            required
-        >
+        <input type="text" id="wifi-ssid" class="qrt-input" placeholder="My Network" required>
     </div>
-    
-    <!-- Security Type -->
-    <div>
-        <label for="wifi-security" class="block text-sm font-medium text-gray-300 mb-2">
-            Security Type
-        </label>
-        <select
-            id="wifi-security"
-            class="w-full rounded-md"
-        >
+
+    <div class="qrt-field">
+        <label for="wifi-security" class="qrt-label">Security type</label>
+        <select id="wifi-security" class="qrt-select">
             <option value="WPA">WPA/WPA2/WPA3 (Recommended)</option>
             <option value="WEP">WEP (Legacy)</option>
-            <option value="nopass">No Password (Open)</option>
+            <option value="nopass">No password (Open)</option>
         </select>
     </div>
-    
-    <!-- Password -->
-    <div id="password-field">
-        <label for="wifi-password" class="block text-sm font-medium text-gray-300 mb-2">
-            Password
-        </label>
-        <input 
-            type="password" 
-            id="wifi-password" 
-            class="w-full rounded-md"
-            placeholder="Your network password"
-        >
-        <div class="flex items-center mt-2">
-            <input 
-                type="checkbox" 
-                id="show-password" 
-                class="rounded"
-            >
-            <label for="show-password" class="ml-2 text-sm text-gray-300">
-                Show password
-            </label>
-        </div>
-    </div>
-    
-    <!-- Hidden Network -->
-    <div class="flex items-center">
-        <input
-            type="checkbox"
-            id="wifi-hidden"
-            class="rounded text-indigo-600 focus:ring-indigo-500"
-        >
-        <label for="wifi-hidden" class="ml-2 text-sm text-gray-300">
-            Hidden network
+
+    <div id="password-field" class="qrt-field">
+        <label for="wifi-password" class="qrt-label">Password</label>
+        <input type="password" id="wifi-password" class="qrt-input" placeholder="Your network password">
+        <label class="qrt-check" style="margin-top: var(--space-1);">
+            <input type="checkbox" id="show-password">
+            <span class="qrt-check__label">Show password</span>
         </label>
     </div>
 
-    <!-- Advanced Options -->
-    <details class="border border-gray-700 rounded-lg">
-        <summary class="cursor-pointer p-4 text-sm font-medium text-gray-300 hover:bg-gray-800 rounded-lg">
-            Advanced Options
-        </summary>
-        <div class="p-4 space-y-4 border-t border-gray-700">
-            <!-- WPA3-Only Mode -->
-            <div id="wpa3-option">
-                <div class="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="wifi-wpa3-only"
-                        class="rounded"
-                    >
-                    <label for="wifi-wpa3-only" class="ml-2 text-sm text-gray-300">
+    <label class="qrt-check">
+        <input type="checkbox" id="wifi-hidden">
+        <span class="qrt-check__label">Hidden network</span>
+    </label>
+
+    <details class="qrt-disclosure">
+        <summary>Advanced Options</summary>
+        <div class="qrt-disclosure__body">
+            <div id="wpa3-option" class="qrt-field">
+                <label class="qrt-check">
+                    <input type="checkbox" id="wifi-wpa3-only">
+                    <span class="qrt-check__label">
                         Force WPA3-only mode (disable WPA2 fallback)
-                    </label>
-                </div>
-                <p class="text-xs text-gray-400 mt-2 ml-6">
-                    For WPA3 networks, enabling this prevents devices from falling back to WPA2. Only enable if your network is WPA3-only.
-                </p>
+                        <span class="qrt-check__hint">For WPA3 networks, prevents devices from falling back to WPA2. Only enable if your network is WPA3-only.</span>
+                    </span>
+                </label>
             </div>
         </div>
     </details>

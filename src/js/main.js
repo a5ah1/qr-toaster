@@ -183,11 +183,7 @@ async function handleStylingToggle() {
 
     // Show/hide styling options panel
     if (elements.stylingOptions) {
-        if (state.stylingEnabled) {
-            elements.stylingOptions.classList.remove('hidden');
-        } else {
-            elements.stylingOptions.classList.add('hidden');
-        }
+        elements.stylingOptions.hidden = !state.stylingEnabled;
     }
 
     // Update format options
@@ -234,11 +230,7 @@ function updateFormatOptions() {
 // Handle format change
 function handleFormatChange() {
     const format = elements.downloadFormat.value;
-    if (format !== 'svg' && state.stylingEnabled) {
-        elements.resolutionControl.classList.remove('hidden');
-    } else {
-        elements.resolutionControl.classList.add('hidden');
-    }
+    elements.resolutionControl.hidden = !(format !== 'svg' && state.stylingEnabled);
 }
 
 // Update resolution display
@@ -250,17 +242,19 @@ function updateResolutionDisplay() {
 
 // Mobile menu functions
 function openMobileMenu() {
-    elements.mobileMenu.classList.remove('translate-x-full');
+    elements.mobileMenu.classList.add('is-open');
     elements.mobileMenu.setAttribute('aria-hidden', 'false');
-    elements.mobileMenuOverlay.classList.remove('hidden');
+    elements.mobileMenuOverlay.classList.add('is-open');
+    elements.mobileMenuButton?.setAttribute('aria-expanded', 'true');
     // Prevent scrolling when menu is open
     document.body.style.overflow = 'hidden';
 }
 
 function closeMobileMenu() {
-    elements.mobileMenu.classList.add('translate-x-full');
+    elements.mobileMenu.classList.remove('is-open');
     elements.mobileMenu.setAttribute('aria-hidden', 'true');
-    elements.mobileMenuOverlay.classList.add('hidden');
+    elements.mobileMenuOverlay.classList.remove('is-open');
+    elements.mobileMenuButton?.setAttribute('aria-expanded', 'false');
     // Re-enable scrolling
     document.body.style.overflow = '';
 }
@@ -269,6 +263,7 @@ function closeMobileMenu() {
 function updateContentDisplay(content) {
     if (elements.contentDisplay) {
         elements.contentDisplay.textContent = content || 'No content';
+        elements.contentDisplay.classList.toggle('qrt-raw--empty', !content);
     }
 }
 
@@ -281,7 +276,7 @@ async function handleErrorCorrectionChange() {
 // Regenerate QR code
 async function regenerateQR() {
     if (!state.content) {
-        elements.preview.innerHTML = '<p class="text-gray-500 text-sm">QR code preview will appear here</p>';
+        elements.preview.innerHTML = '<p class="qr-preview__empty">QR code preview will appear here</p>';
         return;
     }
     
@@ -316,7 +311,7 @@ async function generateBasicQR() {
         elements.preview.innerHTML = svg;
     } catch (error) {
         console.error('QR generation error:', error);
-        elements.preview.innerHTML = '<p class="text-red-500 text-sm">Error generating QR code</p>';
+        elements.preview.innerHTML = '<p class="qr-preview__empty" style="color: var(--color-state-danger);">Error generating QR code</p>';
     }
 }
 

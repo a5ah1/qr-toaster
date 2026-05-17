@@ -4,6 +4,28 @@ All notable changes to QR Toaster will be documented in this file.
 
 This project uses date-based versioning since it's a continuously-deployed website. Each dated section represents changes that shipped on that date.
 
+## 2026-05-17
+
+### Changed
+- Replaced Tailwind CSS v4 with a hand-rolled design system
+  - New design tokens (warm "toast" amber accent, dark-only palette, system fonts)
+  - New `.qrt-*` component classes for panels, fields, buttons, toggles, segmented controls, ranges, and disclosures
+  - Three-panel grid now stacks below 1100px (was 1280px)
+  - Mobile drawer rebuilt with `is-open` modifier instead of transform classes
+  - Mobile-ready: all controls ≥44px tall, text inputs ≥16px (suppresses iOS auto-zoom)
+- Updated About-page card grid and Privacy page layout to use the new design system
+- Switched theme-color to match the new dark panel background
+- Updated brand mark: SVG logo now wired into the nav at 28px
+
+### Removed
+- Tailwind CSS v4, PostCSS pipeline, and the `build-css.js` script
+- `@tailwindcss/postcss`, `@tailwindcss/typography`, and `tailwindcss` dependencies
+- `npm run build:css` and `npm run watch:css` scripts (no separate CSS build needed)
+
+### Technical
+- Bumped to 0.2.0 to mark the visible UI rewrite
+- Three-file CSS load order: tokens → components → app shell, all cache-busted with `?v={{ build.version }}`
+
 ## 2025-12-10
 
 ### Changed

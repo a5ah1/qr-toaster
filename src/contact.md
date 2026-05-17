@@ -7,8 +7,8 @@ permalink: /contact/
 
 <!-- Page header content -->
 <template id="header-content">
-    <h1 class="text-3xl font-bold text-gray-100 mb-3">Contact QR Code Generator</h1>
-    <p class="text-gray-300 text-lg">Create vCard QR codes for instant contact sharing. Recipients can save your information directly to their contacts with a single scan.</p>
+    <h1>Contact QR Code Generator</h1>
+    <p>Create vCard QR codes for instant contact sharing. Recipients can save your information directly to their contacts with a single scan.</p>
 </template>
 
 <!-- Page documentation content -->
@@ -77,161 +77,67 @@ END:VCARD</code></pre>
     </ul>
 </template>
 
-<form id="contact-form" class="space-y-4">
-    <h3 class="text-lg font-semibold text-gray-100 mb-4">Contact Information</h3>
-    
-    <!-- Name -->
-    <div class="grid grid-cols-2 gap-4">
-        <div>
-            <label for="contact-firstname" class="block text-sm font-medium text-gray-300 mb-2">
-                First Name
-            </label>
-            <input
-                type="text"
-                id="contact-firstname"
-                class="w-full rounded-md"
-                placeholder="John"
-            >
+<form id="contact-form" class="qrt-stack">
+    <h2 class="qrt-section-title">Contact information</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+        <div class="qrt-field">
+            <label for="contact-firstname" class="qrt-label">First name</label>
+            <input type="text" id="contact-firstname" class="qrt-input" placeholder="John">
         </div>
-        <div>
-            <label for="contact-lastname" class="block text-sm font-medium text-gray-300 mb-2">
-                Last Name
-            </label>
-            <input
-                type="text"
-                id="contact-lastname"
-                class="w-full rounded-md"
-                placeholder="Doe"
-            >
+        <div class="qrt-field">
+            <label for="contact-lastname" class="qrt-label">Last name</label>
+            <input type="text" id="contact-lastname" class="qrt-input" placeholder="Doe">
         </div>
-    </div>
-    
-    <!-- Phone -->
-    <div>
-        <label for="contact-phone" class="block text-sm font-medium text-gray-300 mb-2">
-            Phone Number
-        </label>
-        <input 
-            type="tel" 
-            id="contact-phone" 
-            class="w-full rounded-md"
-            placeholder="+1 (555) 123-4567"
-        >
-    </div>
-    
-    <!-- Email -->
-    <div>
-        <label for="contact-email" class="block text-sm font-medium text-gray-300 mb-2">
-            Email Address
-        </label>
-        <input 
-            type="email" 
-            id="contact-email" 
-            class="w-full rounded-md"
-            placeholder="john.doe@example.com"
-        >
-    </div>
-    
-    <!-- Organization -->
-    <div>
-        <label for="contact-org" class="block text-sm font-medium text-gray-300 mb-2">
-            Organization
-        </label>
-        <input 
-            type="text" 
-            id="contact-org" 
-            class="w-full rounded-md"
-            placeholder="Acme Corp"
-        >
-    </div>
-    
-    <!-- Website -->
-    <div>
-        <label for="contact-url" class="block text-sm font-medium text-gray-300 mb-2">
-            Website
-        </label>
-        <input
-            type="url"
-            id="contact-url"
-            class="w-full rounded-md"
-            placeholder="https://example.com"
-        >
     </div>
 
-    <!-- Additional Details (collapsible) -->
-    <details class="border border-gray-600 rounded-lg">
-        <summary class="px-4 py-3 cursor-pointer text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-lg">
-            Additional Details
-        </summary>
-        <div class="p-4 pt-2 space-y-4 border-t border-gray-600">
-            <!-- Job Title -->
-            <div>
-                <label for="contact-title" class="block text-sm font-medium text-gray-300 mb-2">
-                    Job Title
-                </label>
-                <input
-                    type="text"
-                    id="contact-title"
-                    class="w-full rounded-md"
-                    placeholder="Software Engineer"
-                >
+    <div class="qrt-field">
+        <label for="contact-phone" class="qrt-label">Phone number</label>
+        <input type="tel" id="contact-phone" class="qrt-input" placeholder="+1 (555) 123-4567">
+    </div>
+
+    <div class="qrt-field">
+        <label for="contact-email" class="qrt-label">Email address</label>
+        <input type="email" id="contact-email" class="qrt-input" placeholder="john.doe@example.com">
+    </div>
+
+    <div class="qrt-field">
+        <label for="contact-org" class="qrt-label">Organization</label>
+        <input type="text" id="contact-org" class="qrt-input" placeholder="Acme Corp">
+    </div>
+
+    <div class="qrt-field">
+        <label for="contact-url" class="qrt-label">Website</label>
+        <input type="url" id="contact-url" class="qrt-input" placeholder="https://example.com">
+    </div>
+
+    <details class="qrt-disclosure">
+        <summary>Additional details</summary>
+        <div class="qrt-disclosure__body qrt-stack">
+            <div class="qrt-field">
+                <label for="contact-title" class="qrt-label">Job title</label>
+                <input type="text" id="contact-title" class="qrt-input" placeholder="Software Engineer">
             </div>
 
-            <!-- Address -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">
-                    Address
-                </label>
-                <div class="space-y-3">
-                    <input
-                        type="text"
-                        id="contact-street"
-                        class="w-full rounded-md"
-                        placeholder="Street Address"
-                    >
-                    <div class="grid grid-cols-2 gap-3">
-                        <input
-                            type="text"
-                            id="contact-city"
-                            class="w-full rounded-md"
-                            placeholder="City"
-                        >
-                        <input
-                            type="text"
-                            id="contact-state"
-                            class="w-full rounded-md"
-                            placeholder="State/Region"
-                        >
+            <div class="qrt-field">
+                <label class="qrt-label">Address</label>
+                <div class="qrt-stack" style="--qrt-stack-gap: var(--space-3);">
+                    <input type="text" id="contact-street" class="qrt-input" placeholder="Street address">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                        <input type="text" id="contact-city" class="qrt-input" placeholder="City">
+                        <input type="text" id="contact-state" class="qrt-input" placeholder="State/Region">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input
-                            type="text"
-                            id="contact-postal"
-                            class="w-full rounded-md"
-                            placeholder="Postal Code"
-                        >
-                        <input
-                            type="text"
-                            id="contact-country"
-                            class="w-full rounded-md"
-                            placeholder="Country"
-                        >
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                        <input type="text" id="contact-postal" class="qrt-input" placeholder="Postal code">
+                        <input type="text" id="contact-country" class="qrt-input" placeholder="Country">
                     </div>
                 </div>
             </div>
 
-            <!-- Birthday -->
-            <div>
-                <label for="contact-birthday" class="block text-sm font-medium text-gray-300 mb-2">
-                    Birthday
-                </label>
-                <input
-                    type="date"
-                    id="contact-birthday"
-                    class="w-full rounded-md"
-                >
+            <div class="qrt-field">
+                <label for="contact-birthday" class="qrt-label">Birthday</label>
+                <input type="date" id="contact-birthday" class="qrt-input">
             </div>
-
         </div>
     </details>
 </form>

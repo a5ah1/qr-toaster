@@ -7,8 +7,8 @@ permalink: /
 
 <!-- Page header content -->
 <template id="header-content">
-    <h1 class="text-3xl font-bold text-gray-100 mb-3">Text & URL QR Code Generator</h1>
-    <p class="text-gray-300 text-lg">Encode simple text or web URLs into scannable QR codes. Perfect for sharing links, messages, and contact information.</p>
+    <h1>Text & URL QR Code Generator</h1>
+    <p>Encode simple text or web URLs into scannable QR codes. Perfect for sharing links, messages, and contact information.</p>
 </template>
 
 <!-- Page documentation content -->
@@ -21,11 +21,11 @@ permalink: /
 
     <h3>Examples</h3>
     <pre><code>https://example.com/page</code></pre>
-    <p class="not-prose text-sm text-gray-400 -mt-4 mb-4">↑ This will open as a clickable link</p>
+    <p class="qrt-help">↑ This will open as a clickable link</p>
 
     <pre><code>Hello! Thanks for scanning my QR code.
 Visit my website at example.com</code></pre>
-    <p class="not-prose text-sm text-gray-400 -mt-4 mb-4">↑ This will display as plain text</p>
+    <p class="qrt-help">↑ This will display as plain text</p>
 
     <h2>Compatibility</h2>
     <p>Text and URL QR codes work with all QR code readers on any device—smartphones, tablets, and dedicated scanners. They're the most universally supported QR code type.</p>
@@ -39,50 +39,44 @@ Visit my website at example.com</code></pre>
     </ul>
 </template>
 
-<form id="text-form" class="space-y-4">
-    <!-- Input Mode Toggle -->
-    <div class="flex items-center space-x-4 mb-4">
-        <label class="flex items-center">
-            <input type="radio" name="input-mode" value="single" checked class="mr-2">
-            <span class="text-sm font-medium text-gray-300">Single Line</span>
+<form id="text-form" class="qrt-stack">
+    <!-- Input mode toggle -->
+    <div class="qrt-segmented" role="radiogroup" aria-label="Input mode">
+        <label class="qrt-segmented__opt">
+            <input type="radio" name="input-mode" value="single" checked>
+            <span>Single line</span>
         </label>
-        <label class="flex items-center">
-            <input type="radio" name="input-mode" value="multi" class="mr-2">
-            <span class="text-sm font-medium text-gray-300">Multi Line</span>
+        <label class="qrt-segmented__opt">
+            <input type="radio" name="input-mode" value="multi">
+            <span>Multi line</span>
         </label>
     </div>
-    
-    <!-- Single Line Input -->
-    <div id="single-line-input">
-        <label for="text-input" class="block text-sm font-medium text-gray-300 mb-2">
-            Enter text or URL
-        </label>
-        <input 
-            type="text" 
-            id="text-input" 
-            class="w-full rounded-md"
+
+    <!-- Single line input -->
+    <div id="single-line-input" class="qrt-field">
+        <label for="text-input" class="qrt-label">Enter text or URL</label>
+        <input
+            type="text"
+            id="text-input"
+            class="qrt-input"
             placeholder="https://example.com or any text"
             autocomplete="off"
         >
     </div>
-    
-    <!-- Multi Line Input -->
-    <div id="multi-line-input" class="hidden">
-        <label for="text-area" class="block text-sm font-medium text-gray-300 mb-2">
-            Enter text
-        </label>
-        <textarea 
-            id="text-area" 
-            rows="6" 
-            class="w-full rounded-md"
+
+    <!-- Multi line input -->
+    <div id="multi-line-input" class="qrt-field" hidden>
+        <label for="text-area" class="qrt-label">Enter text</label>
+        <textarea
+            id="text-area"
+            class="qrt-textarea"
+            rows="6"
             placeholder="Enter your text here..."
         ></textarea>
     </div>
-    
+
     <!-- Character count -->
-    <div class="text-sm text-gray-500">
-        <span id="char-count">0</span> characters
-    </div>
+    <p class="qrt-help"><span id="char-count">0</span> characters</p>
 </form>
 
 <script>
@@ -119,8 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Restore mode
             if (saved.mode === 'multi') {
                 document.querySelector('input[name="input-mode"][value="multi"]').checked = true;
-                singleContainer.classList.add('hidden');
-                multiContainer.classList.remove('hidden');
+                singleContainer.hidden = true;
+                multiContainer.hidden = false;
             }
 
             // Restore values
@@ -148,16 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
     modeRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
             if (e.target.value === 'single') {
-                singleContainer.classList.remove('hidden');
-                multiContainer.classList.add('hidden');
+                singleContainer.hidden = false;
+                multiContainer.hidden = true;
                 // Transfer content if any
                 if (multiInput.value && !singleInput.value) {
                     singleInput.value = multiInput.value.replace(/\n/g, ' ');
                 }
                 singleInput.focus();
             } else {
-                singleContainer.classList.add('hidden');
-                multiContainer.classList.remove('hidden');
+                singleContainer.hidden = true;
+                multiContainer.hidden = false;
                 // Transfer content if any
                 if (singleInput.value && !multiInput.value) {
                     multiInput.value = singleInput.value;

@@ -2,20 +2,21 @@
   "name": "QR Toaster - Privacy-First QR Code Generator",
   "short_name": "QR Toaster",
   "description": "Generate QR codes entirely in your browser with no tracking or analytics",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "theme_color": "#4f46e5",
-  "background_color": "#ffffff",
+  "theme_color": "#1f1c16",
+  "background_color": "#16140f",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

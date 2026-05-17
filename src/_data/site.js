@@ -7,7 +7,7 @@ module.exports = {
   ogImageWidth: "1200",
   ogImageHeight: "630",
   author: "QR Toaster",
-  themeColor: "#4f46e5",
+  themeColor: "#1f1c16",
   language: "en",
 
   // Page-specific defaults

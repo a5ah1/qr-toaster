@@ -7,8 +7,8 @@ permalink: /otp/
 
 <!-- Page header content -->
 <template id="header-content">
-    <h1 class="text-3xl font-bold text-gray-100 mb-3">Two-Factor Authentication QR Code Generator</h1>
-    <p class="text-gray-300 text-lg">Generate QR codes for setting up 2FA (two-factor authentication) in authenticator apps. Add an extra layer of security to your accounts.</p>
+    <h1>Two-Factor Authentication QR Code Generator</h1>
+    <p>Generate QR codes for setting up 2FA (two-factor authentication) in authenticator apps. Add an extra layer of security to your accounts.</p>
 </template>
 
 <!-- Page documentation content -->
@@ -90,182 +90,113 @@ permalink: /otp/
     </ul>
 </template>
 
-<form id="otp-form" class="space-y-4">
-  <h3 class="text-xl font-semibold text-white mb-4">Two-Factor Authentication (2FA)</h3>
+<form id="otp-form" class="qrt-stack">
+  <h2 class="qrt-section-title">Two-factor authentication (2FA)</h2>
 
-  <!-- Account Name -->
-  <div>
-    <label for="account" class="block text-sm font-medium text-gray-300 mb-2">
-      Account Name <span class="text-red-400">*</span>
+  <div class="qrt-field">
+    <label for="account" class="qrt-label">
+      <span>Account name<span class="qrt-label__required"> *</span></span>
     </label>
-    <input
-      type="text"
-      id="account"
-      placeholder="user@example.com or username"
-      class="w-full rounded-md"
-      required
-    />
-    <p class="text-xs text-gray-400 mt-1">Your email or username for this account</p>
+    <input type="text" id="account" class="qrt-input" placeholder="user@example.com or username" required>
+    <p class="qrt-help">Your email or username for this account</p>
   </div>
 
-  <!-- Issuer -->
-  <div>
-    <label for="issuer" class="block text-sm font-medium text-gray-300 mb-2">
-      Issuer/Service <span class="text-red-400">*</span>
+  <div class="qrt-field">
+    <label for="issuer" class="qrt-label">
+      <span>Issuer / service<span class="qrt-label__required"> *</span></span>
     </label>
-    <input
-      type="text"
-      id="issuer"
-      placeholder="Google, GitHub, AWS, etc."
-      class="w-full rounded-md"
-      required
-    />
-    <p class="text-xs text-gray-400 mt-1">The service or provider name</p>
+    <input type="text" id="issuer" class="qrt-input" placeholder="Google, GitHub, AWS, etc." required>
+    <p class="qrt-help">The service or provider name</p>
   </div>
 
-  <!-- Secret Key -->
-  <div>
-    <label for="secret" class="block text-sm font-medium text-gray-300 mb-2">
-      Secret Key <span class="text-red-400">*</span>
+  <div class="qrt-field">
+    <label for="secret" class="qrt-label">
+      <span>Secret key<span class="qrt-label__required"> *</span></span>
     </label>
-    <div class="relative">
-      <input
-        type="password"
-        id="secret"
-        placeholder="Base32 encoded secret"
-        class="w-full rounded-md font-mono"
-        required
-      />
-      <button
-        type="button"
-        id="toggle-secret"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-        aria-label="Toggle secret visibility"
-      >
-        <svg id="eye-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    <div class="qrt-input-wrap qrt-input-wrap--suffix">
+      <input type="password" id="secret" class="qrt-input qrt-mono" placeholder="Base32 encoded secret" required>
+      <button type="button" id="toggle-secret" class="qrt-input-wrap__suffix" aria-label="Toggle secret visibility">
+        <svg id="eye-open" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
         </svg>
-        <svg id="eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+        <svg id="eye-closed" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" hidden>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
         </svg>
       </button>
     </div>
-    <p class="text-xs text-gray-400 mt-1">
+    <p class="qrt-help">
       Base32 encoded (A-Z, 2-7 only).
-      <button type="button" id="generate-secret" class="text-blue-400 hover:text-blue-300 underline">
+      <button type="button" id="generate-secret" style="background:none; border:0; padding:0; color: var(--color-accent); cursor: pointer; text-decoration: underline; font: inherit;">
         Generate random secret
       </button>
     </p>
-    <p id="secret-error" class="text-xs text-red-400 mt-1 hidden">
+    <p id="secret-error" class="qrt-help qrt-help--error" hidden>
       Invalid secret: must contain only A-Z and 2-7 characters
     </p>
   </div>
 
-  <!-- OTP Type -->
-  <div>
-    <label class="block text-sm font-medium text-gray-300 mb-2">
-      OTP Type <span class="text-red-400">*</span>
-    </label>
-    <div class="space-y-2">
-      <label class="flex items-center">
-        <input
-          type="radio"
-          name="type"
-          value="totp"
-          id="type-totp"
-          class="rounded"
-          checked
-        />
-        <span class="ml-2 text-gray-300">TOTP (Time-based) - Most common</span>
+  <div class="qrt-field">
+    <span class="qrt-label">
+      <span>OTP type<span class="qrt-label__required"> *</span></span>
+    </span>
+    <div class="qrt-stack" style="--qrt-stack-gap: var(--space-1);">
+      <label class="qrt-check">
+        <input type="radio" name="type" value="totp" id="type-totp" checked>
+        <span class="qrt-check__label">TOTP (Time-based) — Most common</span>
       </label>
-      <label class="flex items-center">
-        <input
-          type="radio"
-          name="type"
-          value="hotp"
-          id="type-hotp"
-          class="rounded"
-        />
-        <span class="ml-2 text-gray-300">HOTP (Counter-based)</span>
+      <label class="qrt-check">
+        <input type="radio" name="type" value="hotp" id="type-hotp">
+        <span class="qrt-check__label">HOTP (Counter-based)</span>
       </label>
     </div>
   </div>
 
-  <!-- Period (TOTP only) -->
-  <div id="period-container">
-    <label for="period" class="block text-sm font-medium text-gray-300 mb-2">
-      Period (seconds)
-    </label>
-    <input
-      type="number"
-      id="period"
-      value="30"
-      min="1"
-      class="w-full rounded-md"
-    />
-    <p class="text-xs text-gray-400 mt-1">Time step in seconds (default: 30)</p>
+  <div id="period-container" class="qrt-field">
+    <label for="period" class="qrt-label">Period (seconds)</label>
+    <input type="number" id="period" class="qrt-input" value="30" min="1">
+    <p class="qrt-help">Time step in seconds (default: 30)</p>
   </div>
 
-  <!-- Counter (HOTP only) -->
-  <div id="counter-container" class="hidden">
-    <label for="counter" class="block text-sm font-medium text-gray-300 mb-2">
-      Initial Counter <span class="text-red-400">*</span>
+  <div id="counter-container" class="qrt-field" hidden>
+    <label for="counter" class="qrt-label">
+      <span>Initial counter<span class="qrt-label__required"> *</span></span>
     </label>
-    <input
-      type="number"
-      id="counter"
-      value="0"
-      min="0"
-      class="w-full rounded-md"
-    />
-    <p class="text-xs text-gray-400 mt-1">Starting counter value (usually 0)</p>
+    <input type="number" id="counter" class="qrt-input" value="0" min="0">
+    <p class="qrt-help">Starting counter value (usually 0)</p>
   </div>
 
-  <!-- Advanced Options -->
-  <details class="border border-gray-700 rounded-lg">
-    <summary class="cursor-pointer p-4 text-sm font-medium text-gray-300 hover:bg-gray-800 rounded-lg">
-      Advanced Options
-    </summary>
-    <div class="p-4 space-y-4 border-t border-gray-700">
-      <!-- Algorithm -->
-      <div>
-        <label for="algorithm" class="block text-sm font-medium text-gray-300 mb-2">
-          Algorithm
-        </label>
-        <select id="algorithm" class="w-full rounded-md">
+  <details class="qrt-disclosure">
+    <summary>Advanced Options</summary>
+    <div class="qrt-disclosure__body qrt-stack">
+      <div class="qrt-field">
+        <label for="algorithm" class="qrt-label">Algorithm</label>
+        <select id="algorithm" class="qrt-select">
           <option value="SHA1">SHA1 (most compatible)</option>
           <option value="SHA256">SHA256</option>
           <option value="SHA512">SHA512</option>
         </select>
-        <p class="text-xs text-gray-400 mt-1">Most authenticator apps use SHA1</p>
+        <p class="qrt-help">Most authenticator apps use SHA1</p>
       </div>
 
-      <!-- Digits -->
-      <div>
-        <label for="digits" class="block text-sm font-medium text-gray-300 mb-2">
-          Code Digits
-        </label>
-        <select id="digits" class="w-full rounded-md">
+      <div class="qrt-field">
+        <label for="digits" class="qrt-label">Code digits</label>
+        <select id="digits" class="qrt-select">
           <option value="6">6 digits (standard)</option>
           <option value="8">8 digits</option>
         </select>
-        <p class="text-xs text-gray-400 mt-1">Most authenticator apps use 6 digits</p>
+        <p class="qrt-help">Most authenticator apps use 6 digits</p>
       </div>
     </div>
   </details>
 
-  <!-- Label Preview -->
-  <div id="label-preview-container" class="bg-gray-800 p-3 rounded-lg hidden">
-    <p class="text-xs text-gray-400 mb-1">Label Preview:</p>
-    <p id="label-preview" class="text-sm text-gray-300 font-mono break-all"></p>
+  <div id="label-preview-container" hidden style="background: var(--color-bg-sunken); border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-3);">
+    <p class="qrt-help" style="margin-bottom: var(--space-1);">Label preview:</p>
+    <p id="label-preview" class="qrt-mono" style="font-size: var(--text-sm); color: var(--color-fg); word-break: break-all; margin: 0;"></p>
   </div>
 
-  <!-- Security Warning -->
-  <div class="bg-amber-900/20 border border-amber-700/50 rounded-lg p-3">
-    <p class="text-xs text-amber-200">
-      <strong>Security Notice:</strong> Keep your secret key secure. This QR code grants access to your account's two-factor authentication. The secret is not saved by this application.
-    </p>
+  <div class="qrt-warning">
+    <strong>Security notice:</strong> Keep your secret key secure. This QR code grants access to your account's two-factor authentication. The secret is not saved by this application.
   </div>
 </form>
 
@@ -311,8 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleSecretBtn.addEventListener('click', () => {
     const isPassword = secretInput.type === 'password';
     secretInput.type = isPassword ? 'text' : 'password';
-    eyeOpen.classList.toggle('hidden');
-    eyeClosed.classList.toggle('hidden');
+    eyeOpen.hidden = !eyeOpen.hidden;
+    eyeClosed.hidden = !eyeClosed.hidden;
   });
 
   // Generate random Base32 secret
@@ -343,13 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Toggle type-specific fields
   function updateTypeFields() {
     const isTotp = typeTotp.checked;
-    if (isTotp) {
-      periodContainer.classList.remove('hidden');
-      counterContainer.classList.add('hidden');
-    } else {
-      periodContainer.classList.add('hidden');
-      counterContainer.classList.remove('hidden');
-    }
+    periodContainer.hidden = !isTotp;
+    counterContainer.hidden = isTotp;
   }
 
   // Build OTP URI
@@ -370,10 +296,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validate secret format
     if (!validateSecret(secret)) {
-      secretError.classList.remove('hidden');
+      secretError.hidden = false;
       return null;
     } else {
-      secretError.classList.add('hidden');
+      secretError.hidden = true;
     }
 
     // Check for colons in account and issuer
@@ -388,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update label preview
     labelPreview.textContent = `${issuer}:${account}`;
-    labelPreviewContainer.classList.remove('hidden');
+    labelPreviewContainer.hidden = false;
 
     // Build URI
     let uri = `otpauth://${type}/${label}?secret=${secret}&issuer=${encodedIssuer}`;
@@ -420,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Clear QR if no valid content
       window.QRToaster.setContent('');
       if (!accountInput.value && !issuerInput.value && !secretInput.value) {
-        labelPreviewContainer.classList.add('hidden');
+        labelPreviewContainer.hidden = true;
       }
     }
   }

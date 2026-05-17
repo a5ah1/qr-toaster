@@ -8,20 +8,19 @@ Personal use QR generator with an intuitive interface and simple development app
 
 ## Features
 
-- **Privacy First**: 100% client-side processing - no data sent to servers
+- **Privacy First**: 100% client-side processing — no data sent to servers
 - **Multiple QR Types**:
-  - Text/URL - Single or multi-line text and links
-  - Wi-Fi - Network credentials with security settings
-  - Contact - vCard format with name, phone, email, etc.
-  - Event - iCalendar format for calendar events
-  - OTP/2FA - TOTP/HOTP setup for two-factor authentication
+  - Text/URL — single or multi-line text and links
+  - Wi-Fi — network credentials with security settings
+  - Contact — vCard format with name, phone, email, etc.
+  - Event — iCalendar format for calendar events
+  - OTP/2FA — TOTP/HOTP setup for two-factor authentication
 - **Customization**:
   - Adjustable size and error correction levels
   - Advanced styling with gradients and colors (lazy-loaded)
-  - Logo embedding support
-  - Multiple export formats (SVG, PNG, JPEG, WEBP)
-- **Progressive Web App**: Install as standalone app on your device
-- **Lightweight**: Fast loading with code-splitting and efficient rendering
+  - Multiple export formats (SVG, PNG, JPEG, WebP)
+- **Progressive Web App**: install as a standalone app on your device
+- **Lightweight**: fast loading with code-splitting and efficient rendering
 
 ## Live Demo
 
@@ -29,12 +28,12 @@ _Coming soon_
 
 ## Technology Stack
 
-- **Eleventy (11ty)** - Static site generator
-- **Vanilla JavaScript** - ES modules, no frameworks
-- **Tailwind CSS v4** - Utility-first styling
+- **Eleventy (11ty)** — static site generator
+- **Vanilla JavaScript** — ES modules, no frameworks
+- **Hand-rolled design system** — see `design-system/` for tokens, components, and the UI kit. Production CSS lives in `src/css/` (`colors_and_type.css`, `components.css`, `site.css`). System fonts only — no web fonts loaded.
 - **QR Libraries**:
-  - `qrcode-svg` (~6kB) - Bundled for instant black-and-white SVG generation
-  - `qr-code-styling` (~14kB) - Lazy-loaded for advanced styling and exports
+  - `qrcode-svg` (~6kB) — bundled for instant black-and-white SVG generation
+  - `qr-code-styling` (~14kB) — lazy-loaded for advanced styling and exports
 
 ## Quick Start
 
@@ -46,60 +45,56 @@ _Coming soon_
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/a5ah1/qr-toaster.git
 cd qr-toaster
-
-# Install dependencies
 npm install
 ```
 
 ### Development
 
 ```bash
-# Start development server (http://localhost:8080)
 npm start
 ```
 
-This runs Tailwind CSS in watch mode alongside the Eleventy dev server with live reload.
+Runs the Eleventy dev server with live reload at [http://localhost:8080](http://localhost:8080).
 
 ### Build for Production
 
 ```bash
-# Build static site to _site/ directory
 npm run build
 ```
+
+Outputs a static site to `_site/`.
 
 ## Development Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Start development server with CSS watch and live reload |
-| `npm run build` | Build production-ready static site |
-| `npm run build:css` | Build and minify CSS for production |
-| `npm run watch:css` | Watch and compile Tailwind CSS during development |
-| `npm run serve-static` | Build and serve static site locally |
+| `npm start` | Start the Eleventy dev server with live reload |
+| `npm run build` | Build production-ready static site to `_site/` |
+| `npm run serve-static` | Build and serve the static site locally with `http-server` |
 
 ## Project Structure
 
 ```
 qr-toaster/
 ├── src/
-│   ├── _includes/        # Eleventy layout templates
+│   ├── _includes/         # Eleventy layout templates (base.html, plain.html)
 │   ├── css/
-│   │   ├── styles.css    # Tailwind CSS input
-│   │   └── output.css    # Generated CSS output (git-ignored)
-│   ├── js/               # JavaScript modules
-│   ├── index.md          # Homepage
-│   ├── text.md           # Text/URL page
-│   ├── wifi.md           # Wi-Fi page
-│   ├── contact.md        # Contact/vCard page
-│   ├── event.md          # Event/iCalendar page
-│   └── otp.md            # OTP/2FA page
-├── _site/                # Generated static site (git-ignored)
-├── eleventy.config.js    # Eleventy configuration
-├── tailwind.config.js    # Tailwind configuration
-├── postcss.config.js     # PostCSS configuration
+│   │   ├── colors_and_type.css   # Design tokens + bare-element styles
+│   │   ├── components.css        # .qrt-* component classes
+│   │   └── site.css              # App-shell helpers (container, footer, etc.)
+│   ├── js/                # main.js, qrcode.js, qr-code-styling.js
+│   ├── index.html         # Text/URL generator (homepage)
+│   ├── wifi.md            # Wi-Fi generator
+│   ├── contact.md         # Contact / vCard generator
+│   ├── event.md           # Event / iCalendar generator
+│   ├── otp.md             # OTP / 2FA generator
+│   ├── about.md           # About page
+│   └── privacy.md         # Privacy policy
+├── design-system/         # Local design system reference (not deployed)
+├── _site/                 # Generated static site (git-ignored)
+├── eleventy.config.js
 └── package.json
 ```
 
@@ -107,49 +102,42 @@ qr-toaster/
 
 ### Rendering Flow
 
-1. User inputs content in purpose-specific forms
-2. JavaScript serializes data into QR-compatible format
-3. Default renderer (`qrcode-svg`) generates instant SVG preview
-4. Optional: Enable advanced styling to lazy-load `qr-code-styling` module
-5. Download uses active engine's API for export
+1. User inputs content in purpose-specific forms.
+2. JavaScript serializes data into QR-compatible format.
+3. Default renderer (`qrcode-svg`) generates instant SVG preview.
+4. Optional: enable advanced styling to lazy-load the `qr-code-styling` module.
+5. Download uses the active engine's API for export.
 
 ### UI Philosophy
 
-- **Content Controls**: Collect raw data to encode
-- **Appearance Controls**: Manage visuals (size, colors, error-correction, styling)
-- Live preview updates on input changes
-- Advanced options in collapsible accordions
-- Responsive design for mobile and desktop
+- **Content controls**: collect raw data to encode.
+- **Appearance controls**: manage visuals (size, colors, error correction, styling).
+- Live preview updates on input changes.
+- Advanced options in collapsible disclosures.
+- Three-panel layout (Content / Appearance / Output) on wide screens; single column below 1100px.
 
 ## Privacy Guarantee
 
-- **Zero server processing**: All QR generation happens in your browser
-- **No analytics or tracking**: No Google Analytics, no third-party scripts
-- **No network requests**: After initial page load, everything works offline
-- **Open source**: Audit the code yourself - it's all here
+- **Zero server processing**: all QR generation happens in your browser.
+- **No analytics or tracking**: no Google Analytics, no third-party scripts.
+- **No web fonts**: nothing is loaded from third-party CDNs.
+- **No network requests** after initial page load — everything works offline.
+- **Open source**: audit the code yourself.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+Contributions are welcome — please feel free to submit issues or pull requests.
 
 ### Development Notes
 
-- Write clean, modular vanilla JavaScript with separated concerns
-- Use Tailwind utility classes for styling
-- Ensure accessibility with ARIA labels and keyboard navigation
-- Maintain privacy-first approach - no external network calls
-
-## Tailwind CSS v4
-
-This project uses Tailwind CSS v4, which has some important differences from v3:
-
-- PostCSS plugin is in separate `@tailwindcss/postcss` package
-- Build scripts use `postcss` CLI (not `tailwindcss` CLI)
-- Config in `postcss.config.js` must reference `'@tailwindcss/postcss'`
+- Write clean, modular vanilla JavaScript with separated concerns.
+- Style with the `.qrt-*` component classes and design tokens from `colors_and_type.css`. Do not introduce a utility-CSS framework.
+- Ensure accessibility with ARIA labels and keyboard navigation.
+- Maintain the privacy-first approach — no external network calls.
 
 ## License
 
-[MIT License](LICENSE) - see LICENSE file for details
+[MIT License](LICENSE) — see LICENSE file for details.
 
 ## Acknowledgments
 
