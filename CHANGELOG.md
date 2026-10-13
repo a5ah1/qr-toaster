@@ -4,6 +4,40 @@ All notable changes to QR Toaster will be documented in this file.
 
 This project uses date-based versioning since it's a continuously-deployed website. Each dated section represents changes that shipped on that date.
 
+## 2026-10-12
+
+### Changed
+- Replaced both QR libraries (`qrcode-svg` and `qr-code-styling`) with a single encoder, Project Nayuki's QR Code generator library, plus an in-house renderer (`src/js/qr-render.js`)
+  - Plain and styled modes now produce the same code; styling only changes the shapes drawn
+  - The preview, SVG, PNG, JPEG, and WebP downloads all render from the same geometry
+  - The chosen error correction level is used exactly
+- PNG, JPEG, and WebP downloads no longer require advanced styling
+- One "Size (px)" control now sets the download size for every format (replaces the separate resolution slider)
+- Default margin is now 4 modules (the QR standard's quiet zone), and margin is measured in modules in every mode
+- Wi-Fi codes no longer wrap the network name and password in quotes, and list fields in the WPA3 spec's order (T, R, S, H, P)
+- Contact and event codes use CRLF line endings, as their specs require
+- CI now builds with Node 24 (Node 20 reached end of life in April 2026)
+
+### Fixed
+- Non-ASCII text (accents, curly apostrophes, CJK, emoji) was corrupted in styled mode and in emoji-containing basic codes; some emoji inputs failed to generate at all
+- Basic codes no longer prefix non-ASCII content with a UTF-8 byte-order mark
+- SVG downloads ignored advanced styling and always downloaded the plain code
+- Styled codes had faint seams between adjacent modules
+- JPEG downloads with a transparent background now get a white background instead of black
+- Event codes now escape commas, semicolons, backslashes, and line breaks (multi-line descriptions were cut off, and text could inject calendar properties)
+- Event codes include the required UID and DTSTAMP properties
+- All-day events ended a day early (iCalendar end dates are exclusive)
+- An end time before the start now shows an error instead of producing an invalid event
+- Saved all-day event dates were lost on reload, and toggling all-day cleared entered dates
+- Contact codes always include N and FN (required by vCard 3.0), and clearing the form now clears the code
+- OTP secrets with RFC 4648 padding (`=`) or dash grouping are accepted; colons in the account or issuer, and invalid period/counter values, now show an error instead of silently clearing the code
+- Wi-Fi password and WPA3 fields hid via inline styles that overrode their flex layout
+
+### Technical
+- Bumped to 0.3.0 for the QR engine change
+- `qrcodegen.js` and `qr-render.js` are cache-busted through an import map in both layouts
+- Removed `qrcode-svg` and `qr-code-styling` dependencies
+
 ## 2026-05-17
 
 ### Added
