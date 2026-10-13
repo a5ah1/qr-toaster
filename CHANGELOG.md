@@ -17,6 +17,7 @@ This project uses date-based versioning since it's a continuously-deployed websi
 - Wi-Fi codes no longer wrap the network name and password in quotes, and list fields in the WPA3 spec's order (T, R, S, H, P)
 - Contact and event codes use CRLF line endings, as their specs require
 - CI now builds with Node 24 (Node 20 reached end of life in April 2026)
+- Deploy workflow updated to current GitHub Actions majors (checkout v7, setup-node v7, upload-pages-artifact v5, deploy-pages v5), which run on Node 24 and clear the Node 20 deprecation warnings
 
 ### Fixed
 - Non-ASCII text (accents, curly apostrophes, CJK, emoji) was corrupted in styled mode and in emoji-containing basic codes; some emoji inputs failed to generate at all
