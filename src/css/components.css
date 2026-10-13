@@ -782,6 +782,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
   padding-left: var(--space-6);
   margin: 0;
 }
+/* The reset above outranks `.qrt-prose > * + *`; restore the flow gap */
+.qrt-prose > * + ul, .qrt-prose > * + ol { margin-top: var(--space-4); }
 .qrt-prose li + li { margin-top: 6px; }
 .qrt-prose li::marker { color: var(--color-toast-300); }
 .qrt-prose strong { color: var(--color-fg-strong); font-weight: var(--weight-semibold); }
