@@ -31,15 +31,13 @@ _Coming soon_
 - **Eleventy (11ty)** — static site generator
 - **Vanilla JavaScript** — ES modules, no frameworks
 - **Hand-rolled design system** — see `design-system/` for tokens, components, and the UI kit. Production CSS lives in `src/css/` (`colors_and_type.css`, `components.css`, `site.css`). System fonts only — no web fonts loaded.
-- **QR Libraries**:
-  - `qrcode-svg` (~6kB) — bundled for instant black-and-white SVG generation
-  - `qr-code-styling` (~14kB) — lazy-loaded for advanced styling and exports
+- **QR encoding**: Project Nayuki's [QR Code generator library](https://www.nayuki.io/page/qr-code-generator-library) (MIT), vendored as `src/js/qrcodegen.js`. Plain and styled codes are both drawn by our own renderer (`src/js/qr-render.js`).
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js (v18 or higher recommended)
+- Node.js (v22 or higher recommended)
 - npm
 
 ### Installation
@@ -84,7 +82,7 @@ qr-toaster/
 │   │   ├── colors_and_type.css   # Design tokens + bare-element styles
 │   │   ├── components.css        # .qrt-* component classes
 │   │   └── site.css              # App-shell helpers (container, footer, etc.)
-│   ├── js/                # main.js, qrcode.js, qr-code-styling.js
+│   ├── js/                # main.js (UI), qr-render.js (renderer), qrcodegen.js (encoder)
 │   ├── index.html         # Text/URL generator (homepage)
 │   ├── wifi.md            # Wi-Fi generator
 │   ├── contact.md         # Contact / vCard generator
@@ -104,9 +102,9 @@ qr-toaster/
 
 1. User inputs content in purpose-specific forms.
 2. JavaScript serializes data into QR-compatible format.
-3. Default renderer (`qrcode-svg`) generates instant SVG preview.
-4. Optional: enable advanced styling to lazy-load the `qr-code-styling` module.
-5. Download uses the active engine's API for export.
+3. `qrcodegen` encodes the text as UTF-8 (or the compact numeric/alphanumeric mode when possible) at exactly the chosen error correction level.
+4. `qr-render.js` turns the module grid into SVG path data. Advanced styling only changes the shapes it draws (dots, corner squares, corner dots, background rounding), never the code itself.
+5. The preview, SVG downloads, and PNG/JPEG/WebP downloads all render from that same geometry, so every output matches the preview.
 
 ### UI Philosophy
 

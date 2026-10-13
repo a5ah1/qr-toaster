@@ -63,6 +63,15 @@
     </script>
 
     <!-- Scripts -->
+    <!-- Import map gives main.js's module imports the same cache-busting query -->
+    <script type="importmap">
+    {
+      "imports": {
+        "{{ '/js/qr-render.js' | url }}": "{{ '/js/qr-render.js' | url }}?v={{ build.version }}",
+        "{{ '/js/qrcodegen.js' | url }}": "{{ '/js/qrcodegen.js' | url }}?v={{ build.version }}"
+      }
+    }
+    </script>
     <script src="{{ '/js/main.js' | url }}?v={{ build.version }}" type="module" defer></script>
 </head>
 <body>

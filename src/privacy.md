@@ -59,12 +59,11 @@ To improve your experience, QR Toaster may store some data locally in your brows
 
 ## Third-party code
 
-QR Toaster uses these open-source JavaScript libraries to generate QR codes:
+QR Toaster uses this open-source JavaScript library to encode QR codes:
 
-- **qrcode-svg** — lightweight SVG QR code generation ([License](https://github.com/papnkukn/qrcode-svg/blob/master/LICENSE))
-- **qr-code-styling** — advanced QR code styling, lazy-loaded ([License](https://github.com/kozakdenys/qr-code-styling/blob/master/LICENSE))
+- **QR Code generator library** by Project Nayuki — QR code encoding ([MIT License](https://github.com/nayuki/QR-Code-generator/blob/master/Readme.markdown#license))
 
-Both run entirely in your browser and do not communicate with external servers.
+It's served from this site alongside our own rendering code, runs entirely in your browser, and doesn't communicate with external servers.
 
 ## Cookies and tracking
 

@@ -22,7 +22,8 @@ Product-defining, not stylistic. Don't violate without explicit user direction.
   - `colors_and_type.css` — design tokens + bare-element styles
   - `components.css` — `.qrt-*` component classes (panels, fields, buttons, toggles, segmented, range, disclosure, badges, prose)
   - `site.css` — app-shell helpers (container, footer, type-cards) + small refinements such as `[hidden] { display: none !important }` (needed because `.qrt-field` uses `display: flex` and would otherwise override the user-agent `[hidden]` rule)
-- **QR libraries** — `qrcode-svg` bundled, `qr-code-styling` lazy-loaded when advanced styling is enabled
+- **QR encoding** — Nayuki's `qrcodegen` vendored at `src/js/qrcodegen.js` (compiled from the upstream TypeScript; only change is the ES module export). `src/js/qr-render.js` owns all drawing: preview, SVG, and canvas (PNG/JPEG/WebP) render from one geometry, so outputs can't diverge. Don't reintroduce a second encoder or a styling library — the two-library setup produced different codes and broke non-ASCII text.
+- **Module cache-busting** — `main.js` gets `?v={{ build.version }}` from the layout; its static imports get the same query via the `<script type="importmap">` in `base.html` and `plain.html`. Add new imported modules to both import maps.
 
 ## Design system
 

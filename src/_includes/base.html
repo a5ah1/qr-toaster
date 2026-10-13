@@ -63,6 +63,15 @@
     </script>
 
     <!-- Scripts -->
+    <!-- Import map gives main.js's module imports the same cache-busting query -->
+    <script type="importmap">
+    {
+      "imports": {
+        "{{ '/js/qr-render.js' | url }}": "{{ '/js/qr-render.js' | url }}?v={{ build.version }}",
+        "{{ '/js/qrcodegen.js' | url }}": "{{ '/js/qrcodegen.js' | url }}?v={{ build.version }}"
+      }
+    }
+    </script>
     <script src="{{ '/js/main.js' | url }}?v={{ build.version }}" type="module" defer></script>
 </head>
 <body>
@@ -166,8 +175,8 @@
 
                         <div class="qrt-field">
                             <label for="qr-margin" class="qrt-label">Margin (modules)</label>
-                            <input type="number" id="qr-margin" class="qrt-input" min="0" max="10" value="1">
-                            <p class="qrt-help">Quiet zone around QR code</p>
+                            <input type="number" id="qr-margin" class="qrt-input" min="0" max="10" value="4">
+                            <p class="qrt-help">Quiet zone around the code. The QR standard calls for 4.</p>
                         </div>
 
                         <label class="qrt-toggle">
@@ -250,24 +259,18 @@
 
                         <div class="qrt-field">
                             <label for="qr-size" class="qrt-label">Size (px)</label>
-                            <input type="number" id="qr-size" class="qrt-input" min="100" max="2000" value="300" step="50">
+                            <input type="number" id="qr-size" class="qrt-input" min="100" max="4000" value="1000">
+                            <p class="qrt-help">Width and height of the downloaded image</p>
                         </div>
 
                         <div class="qrt-field">
                             <label for="download-format" class="qrt-label">Format</label>
                             <select id="download-format" class="qrt-select">
                                 <option value="svg">SVG</option>
-                                <option value="png" disabled>PNG (enable styling)</option>
-                                <option value="jpeg" disabled>JPEG (enable styling)</option>
-                                <option value="webp" disabled>WebP (enable styling)</option>
+                                <option value="png">PNG</option>
+                                <option value="jpeg">JPEG</option>
+                                <option value="webp">WebP</option>
                             </select>
-                        </div>
-
-                        <div id="resolution-control" class="qrt-field" hidden>
-                            <label for="download-resolution" class="qrt-label">
-                                Resolution: <span id="resolution-value">1000</span>px
-                            </label>
-                            <input type="range" id="download-resolution" class="qrt-range" min="300" max="3000" value="1000" step="10">
                         </div>
 
                         <button id="download-btn" type="button" class="qrt-btn qrt-btn--primary qrt-btn--lg qrt-btn--block">

@@ -1,6 +1,6 @@
 {
   "name": "qr-toaster",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Privacy-focused static website for generating QR codes entirely client-side. No server-side processing, no tracking, no analytics.",
   "main": "index.js",
   "scripts": {
@@ -30,10 +30,6 @@
   "homepage": "https://github.com/a5ah1/qr-toaster#readme",
   "bugs": {
     "url": "https://github.com/a5ah1/qr-toaster/issues"
-  },
-  "dependencies": {
-    "qr-code-styling": "^1.9.2",
-    "qrcode-svg": "^1.1.0"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",

@@ -1,39 +1,50 @@
-// QR Code libraries will be loaded dynamically
+import { encode, renderSVG, paintCanvas, QREncodeError } from './qr-render.js';
+
+// Style used when advanced styling is off
+const PLAIN_STYLE = {
+    dotType: 'square',
+    cornerSquareType: 'square',
+    cornerDotType: 'square',
+    backgroundRound: 0
+};
 
 // State management
 const state = {
     content: '',
     options: {
-        size: 300,
-        previewSize: 250,
+        size: 1000,
+        previewSize: 240,
         foreground: '#000000',
         background: '#FFFFFF',
         transparentBackground: false,
         ecl: 'M',
-        margin: 1
+        margin: 4
     },
     stylingEnabled: false,
-    stylingModule: null,
-    styleOptions: {
-        dotType: 'square',
-        cornerSquareType: 'square',
-        cornerDotType: 'square',
-        backgroundRound: 0
-    }
+    styleOptions: { ...PLAIN_STYLE },
+    encoded: null // { key, qr } cache of the last encoded content
 };
 
 // DOM elements cache
 const elements = {};
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+// Module scripts run after the document is parsed, so the DOM is usually
+// ready already. Page scripts may have called setContent() first, so render
+// whatever content is waiting.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+function init() {
     cacheElements();
     setupEventListeners();
-    updateSizeDisplay();
-    updateResolutionDisplay();
     syncColorDisplay(elements.fgColor);
     syncColorDisplay(elements.bgColor);
-});
+    updateContentDisplay(state.content);
+    regenerateQR();
+}
 
 // Cache frequently accessed DOM elements
 function cacheElements() {
@@ -48,9 +59,6 @@ function cacheElements() {
     elements.errorCorrection = document.getElementById('error-correction');
     elements.downloadBtn = document.getElementById('download-btn');
     elements.downloadFormat = document.getElementById('download-format');
-    elements.resolutionControl = document.getElementById('resolution-control');
-    elements.resolutionSlider = document.getElementById('download-resolution');
-    elements.resolutionValue = document.getElementById('resolution-value');
 
     // Styling options
     elements.stylingOptions = document.getElementById('styling-options');
@@ -86,8 +94,6 @@ function setupEventListeners() {
 
     // Download controls
     elements.downloadBtn?.addEventListener('click', handleDownload);
-    elements.downloadFormat?.addEventListener('change', handleFormatChange);
-    elements.resolutionSlider?.addEventListener('input', updateResolutionDisplay);
 
     // Mobile menu controls
     elements.mobileMenuButton?.addEventListener('click', openMobileMenu);
@@ -97,34 +103,29 @@ function setupEventListeners() {
     // Content-specific listeners will be added by individual pages
 }
 
-// Handle size input change
-async function handleSizeChange() {
+// Handle size input change (download size only; the preview scales with CSS)
+function handleSizeChange() {
     const newSize = parseInt(elements.sizeInput.value);
-    if (!isNaN(newSize) && newSize >= 100 && newSize <= 2000) {
+    if (!isNaN(newSize) && newSize >= 100 && newSize <= 4000) {
         state.options.size = newSize;
     }
 }
 
-// Update size display
-function updateSizeDisplay() {
-    // No longer needed with number input
-}
-
 // Handle margin change
-async function handleMarginChange() {
+function handleMarginChange() {
     const newMargin = parseInt(elements.marginInput.value);
     if (!isNaN(newMargin) && newMargin >= 0 && newMargin <= 10) {
         state.options.margin = newMargin;
-        await regenerateQR();
+        regenerateQR();
     }
 }
 
 // Handle color changes
-async function handleColorChange(event) {
+function handleColorChange(event) {
     state.options.foreground = elements.fgColor.value;
     state.options.background = elements.bgColor.value;
     syncColorDisplay(event?.target);
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Sync .qrt-color swatch + hex value with the native color input
@@ -138,119 +139,49 @@ function syncColorDisplay(input) {
 }
 
 // Handle transparent background toggle
-async function handleTransparentBgToggle() {
+function handleTransparentBgToggle() {
     state.options.transparentBackground = elements.transparentBg.checked;
     // Disable/enable background color picker based on transparency
     if (elements.bgColor) {
         elements.bgColor.disabled = state.options.transparentBackground;
     }
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Handle dot style change
-async function handleDotStyleChange() {
+function handleDotStyleChange() {
     state.styleOptions.dotType = elements.dotStyle.value;
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Handle corner square style change
-async function handleCornerSquareChange() {
+function handleCornerSquareChange() {
     state.styleOptions.cornerSquareType = elements.cornerSquareStyle.value;
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Handle corner dot style change
-async function handleCornerDotChange() {
+function handleCornerDotChange() {
     state.styleOptions.cornerDotType = elements.cornerDotStyle.value;
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Handle background rounding change
-async function handleBackgroundRoundChange() {
+function handleBackgroundRoundChange() {
     state.styleOptions.backgroundRound = parseFloat(elements.backgroundRound.value);
     if (elements.backgroundRoundValue) {
         elements.backgroundRoundValue.textContent = elements.backgroundRound.value;
     }
-    await regenerateQR();
+    regenerateQR();
 }
 
 // Handle styling toggle
-async function handleStylingToggle() {
+function handleStylingToggle() {
     state.stylingEnabled = elements.enableStyling.checked;
-
-    if (state.stylingEnabled && !state.stylingModule) {
-        try {
-            // Load styling module from local file
-            if (!window.QRCodeStyling) {
-                await loadQRCodeStylingLibrary();
-            }
-            state.stylingModule = window.QRCodeStyling;
-        } catch (error) {
-            console.error('Failed to load styling module:', error);
-            state.stylingEnabled = false;
-            elements.enableStyling.checked = false;
-            alert('Failed to load advanced styling. Using basic QR generation.');
-            return;
-        }
-    }
-
-    // Show/hide styling options panel
     if (elements.stylingOptions) {
         elements.stylingOptions.hidden = !state.stylingEnabled;
     }
-
-    // Update format options
-    updateFormatOptions();
-    await regenerateQR();
-}
-
-// Load QR code styling library
-async function loadQRCodeStylingLibrary() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        // Use import.meta.url to get path relative to this module
-        script.src = new URL('qr-code-styling.js', import.meta.url).href;
-        script.onload = () => {
-            resolve();
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-// Update format dropdown based on styling state
-function updateFormatOptions() {
-    const formats = elements.downloadFormat.options;
-    for (let i = 0; i < formats.length; i++) {
-        const option = formats[i];
-        if (option.value !== 'svg') {
-            option.disabled = !state.stylingEnabled;
-            if (option.disabled) {
-                option.text = option.text.replace(' (enable styling)', '') + ' (enable styling)';
-            } else {
-                option.text = option.text.replace(' (enable styling)', '');
-            }
-        }
-    }
-    
-    // Reset to SVG if current format is disabled
-    if (elements.downloadFormat.value !== 'svg' && !state.stylingEnabled) {
-        elements.downloadFormat.value = 'svg';
-        handleFormatChange();
-    }
-}
-
-// Handle format change
-function handleFormatChange() {
-    const format = elements.downloadFormat.value;
-    elements.resolutionControl.hidden = !(format !== 'svg' && state.stylingEnabled);
-}
-
-// Update resolution display
-function updateResolutionDisplay() {
-    if (elements.resolutionValue) {
-        elements.resolutionValue.textContent = elements.resolutionSlider.value;
-    }
+    regenerateQR();
 }
 
 // Mobile menu functions
@@ -281,107 +212,56 @@ function updateContentDisplay(content) {
 }
 
 // Handle error correction level change
-async function handleErrorCorrectionChange() {
+function handleErrorCorrectionChange() {
     state.options.ecl = elements.errorCorrection.value;
-    await regenerateQR();
+    regenerateQR();
 }
 
-// Regenerate QR code
-async function regenerateQR() {
+// Encode the current content, reusing the last result when nothing changed
+function currentQR() {
+    const key = state.options.ecl + '\n' + state.content;
+    if (state.encoded?.key !== key) {
+        state.encoded = { key, qr: encode(state.content, state.options.ecl) };
+    }
+    return state.encoded.qr;
+}
+
+// Options shared by the preview and every download format
+function renderOptions() {
+    return {
+        margin: state.options.margin,
+        foreground: state.options.foreground,
+        background: state.options.transparentBackground ? null : state.options.background,
+        ...(state.stylingEnabled ? state.styleOptions : PLAIN_STYLE)
+    };
+}
+
+// User-facing message for an encoding failure
+function encodeErrorMessage(error) {
+    if (error instanceof QREncodeError) return error.message;
+    console.error('QR generation error:', error);
+    return 'Error generating QR code.';
+}
+
+// Regenerate QR code preview
+function regenerateQR() {
+    if (!elements.preview) return;
+
     if (!state.content) {
         elements.preview.innerHTML = '<p class="qr-preview__empty">QR code preview will appear here</p>';
         return;
     }
-    
-    if (state.stylingEnabled && state.stylingModule) {
-        await generateStyledQR();
-    } else {
-        await generateBasicQR();
-    }
-}
 
-// Generate basic QR code using qrcode-svg
-async function generateBasicQR() {
     try {
-        // Load QR code library if not already loaded
-        if (!window.QRCode) {
-            await loadQRCodeLibrary();
-        }
-
-        const qr = new window.QRCode({
-            content: state.content,
-            padding: state.options.margin,
-            width: state.options.previewSize,
-            height: state.options.previewSize,
-            color: state.options.foreground,
-            background: state.options.transparentBackground ? 'transparent' : state.options.background,
-            ecl: state.options.ecl,
-            join: true,  // Optimize SVG by merging paths
-            container: 'svg-viewbox'  // Responsive SVG with viewBox
+        elements.preview.innerHTML = renderSVG(currentQR(), {
+            ...renderOptions(),
+            size: state.options.previewSize
         });
-
-        const svg = qr.svg();
-        elements.preview.innerHTML = svg;
     } catch (error) {
-        console.error('QR generation error:', error);
-        elements.preview.innerHTML = '<p class="qr-preview__empty" style="color: var(--color-state-danger);">Error generating QR code</p>';
-    }
-}
-
-// Load QR code library
-async function loadQRCodeLibrary() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        // Use import.meta.url to get path relative to this module
-        script.src = new URL('qrcode.js', import.meta.url).href;
-        script.onload = () => {
-            resolve();
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-// Generate styled QR code using qr-code-styling
-async function generateStyledQR() {
-    try {
-        const qrCode = new state.stylingModule({
-            width: state.options.previewSize,
-            height: state.options.previewSize,
-            type: 'svg',
-            data: state.content,
-            margin: state.options.margin,
-            dotsOptions: {
-                color: state.options.foreground,
-                type: state.styleOptions.dotType
-            },
-            backgroundOptions: {
-                color: state.options.transparentBackground ? 'transparent' : state.options.background,
-                round: state.styleOptions.backgroundRound
-            },
-            cornersSquareOptions: {
-                type: state.styleOptions.cornerSquareType,
-                color: state.options.foreground
-            },
-            cornersDotOptions: {
-                type: state.styleOptions.cornerDotType,
-                color: state.options.foreground
-            },
-            qrOptions: {
-                errorCorrectionLevel: state.options.ecl
-            }
-        });
-
-        elements.preview.innerHTML = '';
-        const container = document.createElement('div');
-        container.style.width = `${state.options.previewSize}px`;
-        container.style.height = `${state.options.previewSize}px`;
-        elements.preview.appendChild(container);
-        qrCode.append(container);
-    } catch (error) {
-        console.error('Styled QR generation error:', error);
-        // Fallback to basic
-        await generateBasicQR();
+        const message = document.createElement('p');
+        message.className = 'qr-preview__empty qr-preview__error';
+        message.textContent = encodeErrorMessage(error);
+        elements.preview.replaceChildren(message);
     }
 }
 
@@ -391,95 +271,69 @@ async function handleDownload() {
         alert('Please enter content to generate a QR code');
         return;
     }
-    
+
+    let qr;
+    try {
+        qr = currentQR();
+    } catch (error) {
+        alert(encodeErrorMessage(error));
+        return;
+    }
+
     const format = elements.downloadFormat.value;
-    
-    if (format === 'svg' || !state.stylingEnabled) {
-        await downloadSVG();
-    } else {
-        await downloadRaster(format);
-    }
-}
+    const options = renderOptions();
+    const size = state.options.size;
 
-// Download SVG
-async function downloadSVG() {
     try {
-        // Generate a new QR at the requested size
-        const qr = new window.QRCode({
-            content: state.content,
-            padding: state.options.margin,
-            width: state.options.size,
-            height: state.options.size,
-            color: state.options.foreground,
-            background: state.options.transparentBackground ? 'transparent' : state.options.background,
-            ecl: state.options.ecl,
-            join: true,  // Optimize SVG by merging paths
-            container: 'svg-viewbox'  // Responsive SVG with viewBox
-        });
-
-        const svgData = qr.svg();
-        const blob = new Blob([svgData], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'qrcode.svg';
-        a.click();
-
-        URL.revokeObjectURL(url);
+        if (format === 'svg') {
+            const svg = renderSVG(qr, { ...options, size });
+            saveBlob(new Blob([svg], { type: 'image/svg+xml' }), 'qrcode.svg');
+        } else {
+            const blob = await rasterize(qr, options, size, `image/${format}`);
+            saveBlob(blob, `qrcode.${blob.type === 'image/jpeg' ? 'jpg' : blob.type.split('/')[1]}`);
+        }
     } catch (error) {
         console.error('Download error:', error);
         alert('Error downloading QR code');
     }
 }
 
-// Download raster format
-async function downloadRaster(format) {
-    if (!state.stylingModule || !state.stylingEnabled) return;
+// Draw the QR code onto a canvas and export it as an image blob
+function rasterize(qr, options, size, mimeType) {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
 
-    const resolution = parseInt(elements.resolutionSlider.value);
-
-    try {
-        const qrCode = new state.stylingModule({
-            width: resolution,
-            height: resolution,
-            type: format,
-            data: state.content,
-            margin: state.options.margin,
-            dotsOptions: {
-                color: state.options.foreground,
-                type: state.styleOptions.dotType
-            },
-            backgroundOptions: {
-                color: state.options.transparentBackground ? 'transparent' : state.options.background,
-                round: state.styleOptions.backgroundRound
-            },
-            cornersSquareOptions: {
-                type: state.styleOptions.cornerSquareType,
-                color: state.options.foreground
-            },
-            cornersDotOptions: {
-                type: state.styleOptions.cornerDotType,
-                color: state.options.foreground
-            },
-            qrOptions: {
-                errorCorrectionLevel: state.options.ecl
-            }
-        });
-
-        qrCode.download({
-            name: 'qrcode',
-            extension: format
-        });
-    } catch (error) {
-        console.error('Download error:', error);
-        alert('Error downloading QR code');
+    // JPEG has no alpha channel; without this, transparent areas turn black
+    if (mimeType === 'image/jpeg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, size, size);
     }
+    paintCanvas(ctx, qr, options, size);
+
+    // Browsers that can't encode the requested type (e.g. WebP in older
+    // Safari) fall back to PNG; the caller names the file from blob.type.
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => (blob ? resolve(blob) : reject(new Error('Canvas export failed'))), mimeType, 0.92);
+    });
+}
+
+// Trigger a file download for a blob
+function saveBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Revoking synchronously can cancel the download in some browsers
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // Storage utilities for form persistence
 const STORAGE_PREFIX = 'qr-toaster:';
-let saveTimers = {};
 
 // Debounce utility
 function debounce(func, delay) {
@@ -525,7 +379,7 @@ window.QRToaster = {
     async setContent(content) {
         state.content = content;
         updateContentDisplay(content);
-        await regenerateQR();
+        regenerateQR();
     },
 
     // Get current state
@@ -535,7 +389,7 @@ window.QRToaster = {
 
     // Force regeneration
     async regenerate() {
-        await regenerateQR();
+        regenerateQR();
     },
 
     // Storage utilities

@@ -49,6 +49,7 @@ main { flex: 1; }
   font-size: var(--text-sm);
   text-align: center;
 }
+.qr-preview__error { color: var(--color-state-danger); }
 .qr-preview svg {
   width: 100%;
   max-width: 240px;
