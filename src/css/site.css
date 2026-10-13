@@ -92,6 +92,11 @@ main { flex: 1; }
    loses to author CSS like `.qrt-field { display: flex }`. */
 [hidden] { display: none !important; }
 
+/* Restore the prose flow gap above lists. `.qrt-prose ul, .qrt-prose ol
+   { margin: 0 }` outranks `.qrt-prose > * + *`, which left every list
+   (including .qrt-checklist) flush against the heading or paragraph above. */
+.qrt-prose > * + :is(ul, ol) { margin-top: var(--space-4); }
+
 /* .qrt-color disabled state (matches .qrt-input:disabled convention) */
 .qrt-color:has(input:disabled) {
   opacity: 0.55;
@@ -249,7 +254,7 @@ main { flex: 1; }
   padding: var(--space-5) var(--space-6);
   margin: var(--space-6) 0;
 }
-.qrt-callout h3 { margin-top: 0; }
+.qrt-callout h3 { margin-top: 0; margin-bottom: var(--space-2); }
 
 .qrt-twoup {
   display: grid;

@@ -33,6 +33,7 @@ This project uses date-based versioning since it's a continuously-deployed websi
 - Contact codes always include N and FN (required by vCard 3.0), and clearing the form now clears the code
 - OTP secrets with RFC 4648 padding (`=`) or dash grouping are accepted; colons in the account or issuer, and invalid period/counter values, now show an error instead of silently clearing the code
 - Wi-Fi password and WPA3 fields hid via inline styles that overrode their flex layout
+- Lists in page prose (the About page's "Privacy First" checklist, generator docs, the Privacy page summary box) sat flush against the heading above them
 
 ### Technical
 - Bumped to 0.3.0 for the QR engine change
