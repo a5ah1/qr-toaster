@@ -107,6 +107,9 @@ permalink: /otp/
     </label>
     <input type="text" id="issuer" class="qrt-input" placeholder="Google, GitHub, AWS, etc." required>
     <p class="qrt-help">The service or provider name</p>
+    <p id="label-error" class="qrt-help qrt-help--error" hidden>
+      Account and issuer can't contain a colon (:), because it separates them in the code.
+    </p>
   </div>
 
   <div class="qrt-field">
@@ -121,7 +124,7 @@ permalink: /otp/
       </button>
     </div>
     <p class="qrt-help">
-      Base32 encoded (A-Z, 2-7 only).
+      Base32 encoded (A-Z, 2-7). Spaces, dashes, and trailing <code>=</code> are ignored.
       <button type="button" id="generate-secret" style="background:none; border:0; padding:0; color: var(--color-accent); cursor: pointer; text-decoration: underline; font: inherit;">
         Generate random secret
       </button>
@@ -151,6 +154,7 @@ permalink: /otp/
     <label for="period" class="qrt-label">Period (seconds)</label>
     <input type="number" id="period" class="qrt-input" value="30" min="1">
     <p class="qrt-help">Time step in seconds (default: 30)</p>
+    <p id="period-error" class="qrt-help qrt-help--error" hidden>Period must be a whole number of seconds, 1 or more.</p>
   </div>
 
   <div id="counter-container" class="qrt-field" hidden>
@@ -159,6 +163,7 @@ permalink: /otp/
     </label>
     <input type="number" id="counter" class="qrt-input" value="0" min="0">
     <p class="qrt-help">Starting counter value (usually 0)</p>
+    <p id="counter-error" class="qrt-help qrt-help--error" hidden>Counter must be a whole number, 0 or more.</p>
   </div>
 
   <details class="qrt-disclosure">
@@ -225,6 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const periodContainer = document.getElementById('period-container');
   const counterContainer = document.getElementById('counter-container');
   const secretError = document.getElementById('secret-error');
+  const labelError = document.getElementById('label-error');
+  const periodError = document.getElementById('period-error');
+  const counterError = document.getElementById('counter-error');
   const labelPreview = document.getElementById('label-preview');
   const labelPreviewContainer = document.getElementById('label-preview-container');
 
@@ -258,12 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
       .join('');
   }
 
-  // Validate Base32 secret
+  // Normalize a pasted secret: drop grouping spaces/dashes and RFC 4648
+  // padding, which authenticator apps don't expect in the URI
+  function normalizeSecret(secret) {
+    return secret.replace(/[\s-]/g, '').replace(/=+$/, '').toUpperCase();
+  }
+
+  // Validate Base32 secret (A-Z, 2-7 only)
   function validateSecret(secret) {
-    // Remove whitespace and convert to uppercase
-    const cleaned = secret.replace(/\s/g, '').toUpperCase();
-    // Check if valid Base32 (A-Z, 2-7 only)
-    return /^[A-Z2-7]+$/.test(cleaned);
+    return /^[A-Z2-7]+$/.test(secret);
   }
 
   // Toggle type-specific fields
@@ -277,28 +288,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildOTPURI() {
     const account = accountInput.value.trim();
     const issuer = issuerInput.value.trim();
-    const secret = secretInput.value.replace(/\s/g, '').toUpperCase();
+    const secret = normalizeSecret(secretInput.value);
     const type = typeTotp.checked ? 'totp' : 'hotp';
     const algorithm = algorithmInput.value;
     const digits = digitsInput.value;
-    const period = periodInput.value;
-    const counter = counterInput.value;
+    const period = periodInput.value.trim();
+    const counter = counterInput.value.trim();
+
+    // Show field errors as soon as there's something to judge
+    const secretInvalid = secret !== '' && !validateSecret(secret);
+    const labelInvalid = account.includes(':') || issuer.includes(':');
+    const periodInvalid = type === 'totp' && !/^[1-9]\d*$/.test(period);
+    const counterInvalid = type === 'hotp' && !/^\d+$/.test(counter);
+    secretError.hidden = !secretInvalid;
+    labelError.hidden = !labelInvalid;
+    periodError.hidden = !periodInvalid;
+    counterError.hidden = !counterInvalid;
 
     // Validate required fields
     if (!account || !issuer || !secret) {
       return null;
     }
 
-    // Validate secret format
-    if (!validateSecret(secret)) {
-      secretError.hidden = false;
-      return null;
-    } else {
-      secretError.hidden = true;
-    }
-
-    // Check for colons in account and issuer
-    if (account.includes(':') || issuer.includes(':')) {
+    if (secretInvalid || labelInvalid || periodInvalid || counterInvalid) {
       return null;
     }
 

@@ -19,15 +19,15 @@ permalink: /wifi/
     <h2>Format Overview</h2>
     <p>Wi-Fi QR codes use the standardized <code>WIFI:</code> format, which encodes your network name (SSID), security type, password, and additional settings. The format follows this structure:</p>
 
-    <pre><code>WIFI:S:"NetworkName";T:WPA;P:"password";H:false;;</code></pre>
+    <pre><code>WIFI:T:WPA;S:NetworkName;P:password;;</code></pre>
 
     <p>The components are:</p>
     <ul>
-        <li><strong>S:</strong> Network name (SSID) enclosed in quotes</li>
         <li><strong>T:</strong> Security type (WPA, WEP, or nopass for open networks)</li>
-        <li><strong>P:</strong> Password enclosed in quotes (omitted for open networks)</li>
-        <li><strong>H:</strong> Whether the network is hidden (true/false)</li>
         <li><strong>R:</strong> Optional parameter for WPA3-only networks (R:1 disables WPA2 fallback)</li>
+        <li><strong>S:</strong> Network name (SSID)</li>
+        <li><strong>H:</strong> Present as <code>H:true</code> when the network is hidden</li>
+        <li><strong>P:</strong> Password (omitted for open networks)</li>
     </ul>
 
     <h3>Special Character Escaping</h3>
@@ -180,11 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePasswordField() {
-        if (securitySelect.value === 'nopass') {
-            passwordField.style.display = 'none';
+        passwordField.hidden = securitySelect.value === 'nopass';
+        if (passwordField.hidden) {
             passwordInput.value = '';
-        } else {
-            passwordField.style.display = 'block';
         }
         updateWPA3Option();
         updateWiFiQR();
@@ -192,10 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show/hide WPA3-only option based on security type
     function updateWPA3Option() {
-        if (securitySelect.value === 'WPA') {
-            wpa3Option.style.display = 'block';
-        } else {
-            wpa3Option.style.display = 'none';
+        wpa3Option.hidden = securitySelect.value !== 'WPA';
+        if (wpa3Option.hidden) {
             wpa3OnlyCheckbox.checked = false;
         }
     }
@@ -214,24 +210,27 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Build WiFi QR string with proper escaping and quoting
-        // Format: WIFI:S:"escaped-ssid";T:security;P:"escaped-password";H:true;R:1;;
-        const escapedSsid = escapeWiFiValue(ssid);
-        const escapedPassword = escapeWiFiValue(password);
+        // Build WiFi QR string with backslash escaping and no quotes. Quoted
+        // values are not part of the format: iOS keeps the quotes as part of
+        // the SSID/password and then fails to join.
+        // Field order follows the WPA3 spec's grammar (T, R, S, H, P); other
+        // readers accept any order.
+        // Format: WIFI:T:security;R:1;S:escaped-ssid;H:true;P:escaped-password;;
+        let wifiString = `WIFI:T:${security};`;
 
-        let wifiString = `WIFI:S:"${escapedSsid}";T:${security};`;
-
-        if (security !== 'nopass' && password) {
-            wifiString += `P:"${escapedPassword}";`;
+        // Add WPA3-only parameter if enabled (R:1 disables WPA2 fallback)
+        if (security === 'WPA' && wpa3Only) {
+            wifiString += 'R:1;';
         }
+
+        wifiString += `S:${escapeWiFiValue(ssid)};`;
 
         if (hidden) {
             wifiString += 'H:true;';
         }
 
-        // Add WPA3-only parameter if enabled (R:1 disables WPA2 fallback)
-        if (security === 'WPA' && wpa3Only) {
-            wifiString += 'R:1;';
+        if (security !== 'nopass' && password) {
+            wifiString += `P:${escapeWiFiValue(password)};`;
         }
 
         wifiString += ';';

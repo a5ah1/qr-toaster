@@ -23,6 +23,8 @@ permalink: /event/
 VERSION:2.0
 PRODID:-//QR Toaster//Event QR//EN
 BEGIN:VEVENT
+UID:3f9c2a71b04e5d68@qr-toaster
+DTSTAMP:20250301T120000Z
 SUMMARY:Team Meeting
 DTSTART:20250311T140000Z
 DTEND:20250311T150000Z
@@ -33,6 +35,7 @@ END:VCALENDAR</code></pre>
 
     <p>Key components:</p>
     <ul>
+        <li><strong>UID / DTSTAMP:</strong> A unique ID and creation timestamp, required by the standard so calendars can recognise the event</li>
         <li><strong>SUMMARY:</strong> Event title/name</li>
         <li><strong>DTSTART:</strong> Start date and time in ISO 8601 format (UTC timezone)</li>
         <li><strong>DTEND:</strong> End date and time (optional but recommended)</li>
@@ -41,7 +44,10 @@ END:VCALENDAR</code></pre>
     </ul>
 
     <h3>Date and Time Format</h3>
-    <p>Times are stored in UTC timezone using the format <code>YYYYMMDDTHHMMSSZ</code>. For all-day events, the format changes to <code>YYYYMMDD</code> with the <code>VALUE=DATE</code> parameter. The generator handles these conversions automatically based on your local timezone.</p>
+    <p>Times are stored in UTC timezone using the format <code>YYYYMMDDTHHMMSSZ</code>. For all-day events, the format changes to <code>YYYYMMDD</code> with the <code>VALUE=DATE</code> parameter, and the end date is exclusive (an event that runs through the 17th ends on the 18th). The generator handles these conversions automatically based on your local timezone.</p>
+
+    <h3>Special Characters</h3>
+    <p>Commas, semicolons, backslashes, and line breaks in the title, location, and description are escaped automatically so they arrive intact.</p>
 
     <h2>Compatibility</h2>
     <ul>
@@ -94,6 +100,7 @@ END:VCALENDAR</code></pre>
         <div class="qrt-field">
             <label for="event-end" class="qrt-label">End date &amp; time</label>
             <input type="datetime-local" id="event-end" class="qrt-input">
+            <p id="event-end-error" class="qrt-help qrt-help--error" hidden>End must be after the start. It's left out until fixed.</p>
         </div>
     </div>
 
@@ -138,6 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const locationInput = document.getElementById('event-location');
     const descriptionInput = document.getElementById('event-description');
     const allDayCheckbox = document.getElementById('event-allday');
+    const endError = document.getElementById('event-end-error');
+
+    // UID and DTSTAMP are required by RFC 5545. They're generated once per
+    // visit so the code doesn't change while you type.
+    const uid = Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, '0')).join('') + '@qr-toaster';
+    const dtstamp = formatDateTime(new Date());
 
     // Create debounced save function
     const debouncedSave = window.QRToaster?.storage.createDebouncedSave('event');
@@ -146,17 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadSavedData() {
         const saved = window.QRToaster?.storage.load('event');
         if (saved) {
+            // Set the input types first: a date input discards a date-time
+            // value (and vice versa), which used to lose saved all-day dates.
+            if (saved.allDay !== undefined) allDayCheckbox.checked = saved.allDay;
+            setTimeInputTypes(allDayCheckbox.checked);
             if (saved.title) titleInput.value = saved.title;
             if (saved.start) startInput.value = saved.start;
             if (saved.end) endInput.value = saved.end;
             if (saved.location) locationInput.value = saved.location;
             if (saved.description) descriptionInput.value = saved.description;
-            if (saved.allDay !== undefined) allDayCheckbox.checked = saved.allDay;
-            // Update input types based on saved allDay state
-            if (saved.allDay) {
-                startInput.type = 'date';
-                endInput.type = 'date';
-            }
             updateEvent();
         }
     }
@@ -175,74 +186,105 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function formatDateTime(dateTimeString) {
-        // Convert HTML datetime-local format to iCalendar format
-        const date = new Date(dateTimeString);
+    // Date to iCalendar UTC date-time (YYYYMMDDTHHMMSSZ)
+    function formatDateTime(date) {
         return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     }
 
+    // "2026-03-15" to iCalendar date (YYYYMMDD), optionally shifted by days
+    function formatDate(value, addDays = 0) {
+        const date = new Date(value.slice(0, 10) + 'T00:00:00Z');
+        date.setUTCDate(date.getUTCDate() + addDays);
+        return date.toISOString().slice(0, 10).replace(/-/g, '');
+    }
+
+    // Escape TEXT values per RFC 5545 §3.3.11
+    function escapeText(value) {
+        return value
+            .replace(/\\/g, '\\\\')  // Backslash must be first
+            .replace(/;/g, '\\;')
+            .replace(/,/g, '\\,')
+            .replace(/\r\n|\r|\n/g, '\\n');
+    }
+
     function updateEvent() {
-        const title = titleInput.value;
+        const title = titleInput.value.trim();
         const startTime = startInput.value;
         const endTime = endInput.value;
-        const location = locationInput.value;
-        const description = descriptionInput.value;
+        const location = locationInput.value.trim();
+        const description = descriptionInput.value.trim();
         const allDay = allDayCheckbox.checked;
 
         if (!title || !startTime) {
+            endError.hidden = true;
             if (window.QRToaster) {
                 window.QRToaster.setContent('');
             }
             return;
         }
 
-        // Build iCalendar string
-        let icalString = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//QR Toaster//Event QR//EN\n';
-        icalString += 'BEGIN:VEVENT\n';
-        icalString += `SUMMARY:${title}\n`;
+        // Both values share one ISO-style format, so string order is time order.
+        // An all-day event may end on its start day; a timed one must end later.
+        const hasValidEnd = Boolean(endTime) && (allDay ? endTime >= startTime : endTime > startTime);
+        endError.hidden = !endTime || hasValidEnd;
+
+        const lines = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//QR Toaster//Event QR//EN',
+            'BEGIN:VEVENT',
+            `UID:${uid}`,
+            `DTSTAMP:${dtstamp}`,
+            `SUMMARY:${escapeText(title)}`
+        ];
 
         if (allDay) {
-            // All-day events use date format (YYYYMMDD)
-            const startDate = new Date(startTime).toISOString().substr(0, 10).replace(/-/g, '');
-            icalString += `DTSTART;VALUE=DATE:${startDate}\n`;
-            if (endTime) {
-                const endDate = new Date(endTime).toISOString().substr(0, 10).replace(/-/g, '');
-                icalString += `DTEND;VALUE=DATE:${endDate}\n`;
+            lines.push(`DTSTART;VALUE=DATE:${formatDate(startTime)}`);
+            if (hasValidEnd) {
+                // DTEND is exclusive, so the event runs through the chosen end date
+                lines.push(`DTEND;VALUE=DATE:${formatDate(endTime, 1)}`);
             }
         } else {
-            icalString += `DTSTART:${formatDateTime(startTime)}\n`;
-            if (endTime) {
-                icalString += `DTEND:${formatDateTime(endTime)}\n`;
+            lines.push(`DTSTART:${formatDateTime(new Date(startTime))}`);
+            if (hasValidEnd) {
+                lines.push(`DTEND:${formatDateTime(new Date(endTime))}`);
             }
         }
 
         if (location) {
-            icalString += `LOCATION:${location}\n`;
+            lines.push(`LOCATION:${escapeText(location)}`);
         }
         if (description) {
-            icalString += `DESCRIPTION:${description}\n`;
+            lines.push(`DESCRIPTION:${escapeText(description)}`);
         }
 
-        icalString += 'END:VEVENT\nEND:VCALENDAR';
+        lines.push('END:VEVENT', 'END:VCALENDAR');
 
-        // Update QR code
+        // Update QR code (iCalendar lines end with CRLF)
         if (window.QRToaster) {
-            window.QRToaster.setContent(icalString);
+            window.QRToaster.setContent(lines.join('\r\n'));
+        }
+    }
+
+    // Switch between date and datetime-local inputs, carrying the date across
+    // (the browser would otherwise clear a value that doesn't fit the new type)
+    function setTimeInputTypes(allDay) {
+        const type = allDay ? 'date' : 'datetime-local';
+        for (const input of [startInput, endInput]) {
+            if (input.type === type) continue;
+            const value = input.value;
+            if (allDay && value.length > 10) {
+                input.dataset.time = value.slice(11, 16);
+            }
+            input.type = type;
+            if (value) {
+                input.value = allDay ? value.slice(0, 10) : `${value.slice(0, 10)}T${input.dataset.time || '09:00'}`;
+            }
         }
     }
 
     function toggleTimeFields() {
-        const allDay = allDayCheckbox.checked;
-
-        if (allDay) {
-            // Change to date inputs
-            startInput.type = 'date';
-            endInput.type = 'date';
-        } else {
-            // Change to datetime-local inputs
-            startInput.type = 'datetime-local';
-            endInput.type = 'datetime-local';
-        }
+        setTimeInputTypes(allDayCheckbox.checked);
         updateEvent();
     }
 

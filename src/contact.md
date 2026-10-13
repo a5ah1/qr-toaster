@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/\\/g, '\\\\')
             .replace(/;/g, '\\;')
             .replace(/,/g, '\\,')
-            .replace(/\n/g, '\\n');
+            .replace(/\r\n|\r|\n/g, '\\n');
     }
 
     function updateVCard() {
@@ -263,50 +263,57 @@ document.addEventListener('DOMContentLoaded', () => {
         // Build full name from parts
         const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
-        // Build vCard string with improved compatibility
-        // N and NICKNAME fields ensure proper display on iOS/Android
-        let vcard = 'BEGIN:VCARD\nVERSION:3.0\n';
-
-        // N (structured name) - critical for phone compatibility
-        // Format: N:LastName;FirstName;MiddleName;Prefix;Suffix
-        if (firstName || lastName) {
-            vcard += `N:${escapeVCard(lastName)};${escapeVCard(firstName)};;;\n`;
+        // Nothing identifying left: clear the code instead of leaving a stale one
+        if (!fullName && !org && !phone && !email) {
+            if (window.QRToaster) {
+                window.QRToaster.setContent('');
+            }
+            return;
         }
 
-        // FN (formatted name) - required by vCard spec
-        if (fullName) vcard += `FN:${escapeVCard(fullName)}\n`;
+        // Build vCard lines with improved compatibility
+        // N and NICKNAME fields ensure proper display on iOS/Android
+        const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+
+        // N (structured name) - required by vCard 3.0 and critical for phones
+        // Format: N:LastName;FirstName;MiddleName;Prefix;Suffix
+        lines.push(`N:${escapeVCard(lastName)};${escapeVCard(firstName)};;;`);
+
+        // FN (formatted name) - required by vCard 3.0. Without a person's
+        // name, fall back to the organization, then email or phone.
+        lines.push(`FN:${escapeVCard(fullName || org || email || phone)}`);
 
         // NICKNAME - fallback display name for some devices
-        if (fullName) vcard += `NICKNAME:${escapeVCard(fullName)}\n`;
+        if (fullName) lines.push(`NICKNAME:${escapeVCard(fullName)}`);
 
         // Organization
-        if (org) vcard += `ORG:${escapeVCard(org)}\n`;
+        if (org) lines.push(`ORG:${escapeVCard(org)}`);
 
         // Job title
-        if (title) vcard += `TITLE:${escapeVCard(title)}\n`;
+        if (title) lines.push(`TITLE:${escapeVCard(title)}`);
 
         // Phone with TYPE for better categorization
-        if (phone) vcard += `TEL;TYPE=CELL:${phone}\n`;
+        if (phone) lines.push(`TEL;TYPE=CELL:${phone}`);
 
         // Email with TYPE for better categorization
-        if (email) vcard += `EMAIL;TYPE=WORK:${email}\n`;
+        if (email) lines.push(`EMAIL;TYPE=WORK:${email}`);
 
         // Website
-        if (url) vcard += `URL:${url}\n`;
+        if (url) lines.push(`URL:${url}`);
 
         // Address - format: ADR;TYPE=WORK:;;Street;City;State;PostalCode;Country
         if (street || city || state || postal || country) {
-            vcard += `ADR;TYPE=WORK:;;${escapeVCard(street)};${escapeVCard(city)};${escapeVCard(state)};${escapeVCard(postal)};${escapeVCard(country)}\n`;
+            lines.push(`ADR;TYPE=WORK:;;${escapeVCard(street)};${escapeVCard(city)};${escapeVCard(state)};${escapeVCard(postal)};${escapeVCard(country)}`);
         }
 
         // Birthday - format: BDAY:YYYY-MM-DD
-        if (birthday) vcard += `BDAY:${birthday}\n`;
+        if (birthday) lines.push(`BDAY:${birthday}`);
 
-        vcard += 'END:VCARD';
+        lines.push('END:VCARD');
 
-        // Update QR code
-        if (window.QRToaster && (firstName || lastName || phone || email)) {
-            window.QRToaster.setContent(vcard);
+        // Update QR code (vCard lines end with CRLF)
+        if (window.QRToaster) {
+            window.QRToaster.setContent(lines.join('\r\n'));
         }
     }
 
