@@ -31,6 +31,8 @@ The `design-system/` directory at the repo root is **gitignored locally but auth
 
 If the production CSS in `src/css/` ever drifts from `design-system/colors_and_type.css` + `components.css`, the design system wins — port from there.
 
+Because it's gitignored, edits to `design-system/` don't travel between machines. When you change it, make the identical change in `src/css/` and tell the user to sync the copy on their other machine.
+
 ## Icons
 
 Use Lucide via the `{% lucide "name" %}` Liquid shortcode (defined in `eleventy.config.js`). It reads from `node_modules/lucide-static/icons/*.svg` at build time and inlines the SVG. Don't add new icon dependencies and don't load Lucide from a CDN.
@@ -49,6 +51,10 @@ npm run build      # writes _site/
 ```
 
 **Pushing to `main` triggers an automatic GitHub Pages deploy** via `.github/workflows/deploy.yml`. Always confirm with the user before pushing.
+
+## Verifying QR output
+
+There's no test suite. After changing `qr-render.js`, `qrcodegen.js`, or a payload builder, decode real renders with ZXing — `zxing-wasm` in Node, with SVGs rasterized by `@resvg/resvg-js` (install both in a scratch directory, not the project). Cover every dot / corner-square / corner-dot combination at ~5 px per module, plus non-ASCII text (emoji, CJK, curly quotes) and all four error-correction levels. Don't use jsQR as the reference: it fails on styled codes that ZXing reads fine.
 
 ## Visibility toggles
 
